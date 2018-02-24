@@ -56,15 +56,13 @@
                     </div>
                 </Menu>
                 <div class="operation">
-                  <Button :style="{margin: '15px'}">登录</Button>
-                  <Button>注册</Button>
+                  <Button :style="{margin: '15px'}" @click="toLogin(1)">登录</Button>
+                  <Button @click="toLogin(0)">注册</Button>
                 </div>
             </Header>
             <Content :style="{padding: '20px 250px'}">
                 <Card>
-                    <div style="min-height: 550px;">
-                        <router-view></router-view>
-                    </div>
+                    <router-view></router-view>
                 </Card>
             </Content>
             <Footer class="layout-footer-center">在这里，记录生活中的小美好</Footer>
@@ -73,6 +71,14 @@
 </template>
 <script>
   export default {
-    name: 'App'
+    name: 'App',
+    data(){
+        return {}
+    },
+    methods: {
+        toLogin:function(login){
+            this.$router.push('/login/'+login);
+        }
+     }
   }
 </script>
