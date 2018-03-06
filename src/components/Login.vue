@@ -47,7 +47,8 @@
                   <Input type="text" v-model="formCustom.mail"></Input>
               </FormItem>
               <FormItem class="but">
-                  <Button @click="handleSubmit('formCustom')">提交</Button>
+                  <Button  v-show="isLogin==0" @click="registerSubmit('formCustom')">提交</Button>
+                  <Button  v-show="isLogin==1" @click="loginSubmit('formCustom')">提交</Button>
                   <Button @click="handleReset('formCustom')" style="margin-left: 8px">重置</Button>
               </FormItem>
           </Form>
@@ -81,11 +82,19 @@
                 if (!value) {
                     return callback(new Error('用户名不能为空'));
                 }
-
+                debugger;
                 // 模拟异步验证效果
-                setTimeout(() => {
-                            callback();
-                }, 1000);
+                this.$axios.get('/api/user/checkUsername', {
+                    params:{
+                      username:this.formCustom.username
+                    }
+                }).then((response) => {
+                  if(response.data.info.repeat){
+                    return callback(new Error('用户名重复啦，换一个呗~'));
+                  }else{
+                    callback();
+                  }
+                });
             };
             
             return {
@@ -114,15 +123,28 @@
               let routerParams = this.$route.params.isLogin*1;
               // 将数据放在当前组件的数据内
               this.isLogin = routerParams;
+              this.handleReset('formCustom');
             },
-            handleSubmit (name) {
+            registerSubmit (name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$Message.success('Success!');
-                    } else {
-                        this.$Message.error('Fail!');
+                      this.$axios.get('/api/user/addUser', {
+                        params:{
+                          username:this.formCustom.username,
+                          password:this.formCustom.passwd,
+                          mail:this.formCustom.mail
+                        }
+                      }).then((response) => {
+                          this.$Message.success('注册成功！');
+                          setTimeout(() => {
+                            this.$router.push('/login/1');
+                        }, 1000);
+                      });
                     }
                 })
+            },
+            loginSubmit (name) {
+                
             },
             handleReset (name) {
                 this.$refs[name].resetFields();

@@ -10,8 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
-
+    proxyTable: {
+        '/api': {
+            target: 'http://localhost:8605',//设置你调用的接口域名和端口号 别忘了加http
+            changeOrigin: true,
+            pathRewrite: {
+              '^/api': '/warmthAndBeauty'//用‘/api’代替target里面的地址,后面组件中我们掉接口时直接用api代替
+            }
+        }
+    },
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined

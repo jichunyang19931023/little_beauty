@@ -5,10 +5,14 @@ import App from './App'
 import router from './router'
 import iView from 'iview'
 import locale from 'iview/dist/locale/zh-CN'
-import 'iview/dist/styles/iview.css';
+import VueResource from 'vue-resource'
+import 'iview/dist/styles/iview.css'
+import axios from 'axios'
 
 Vue.use(iView, { locale })
+Vue.use(VueResource)
 Vue.config.productionTip = false
+Vue.prototype.$axios=axios
 
 /* eslint-disable no-new */
 new Vue({
