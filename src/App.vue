@@ -51,7 +51,7 @@
         <Layout>
             <Header>
                 <Menu mode="horizontal" theme="light" active-name="1">
-                    <div class="layout-logo"><img src="./assets/logo.png"></div>
+                    <div class="layout-logo"><img src="./assets/images/logo.png"></div>
                     <div class="layout-nav">
                         <MenuItem name="1">
                             首页
@@ -69,11 +69,11 @@
                 </Menu>
                 <div v-if="username" class="username">
                     <Dropdown>
-                        <img class="image" src="./assets/default.png">
+                        <img class="image" src="./assets/images/default.png">
                         <a href="">{{username}}</a>
                         <DropdownMenu slot="list">
                             <DropdownItem>我的资料</DropdownItem>
-                            <DropdownItem>我的博客</DropdownItem>
+                            <DropdownItem><router-link to="/blogList">我的博客</router-link></DropdownItem>
                             <DropdownItem>我的评论</DropdownItem>
                             <DropdownItem>我的收藏</DropdownItem>
                             <DropdownItem>联系我们</DropdownItem>
@@ -128,16 +128,6 @@
         },
         initUsername:function(data){
             this.username = data;
-        },
-        getCookie: function (cname) {
-                var name = cname + "=";
-                var ca = document.cookie.split(';');
-                for (var i = 0; i < ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0) == ' ') c = c.substring(1);
-                    if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
-                }
-                return "";
         }
      }
   }

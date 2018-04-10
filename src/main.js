@@ -8,11 +8,13 @@ import locale from 'iview/dist/locale/zh-CN'
 import VueResource from 'vue-resource'
 import 'iview/dist/styles/iview.css'
 import axios from 'axios'
+import common from './assets/util.js'  
 
 Vue.use(iView, { locale })
 Vue.use(VueResource)
 Vue.config.productionTip = false
 Vue.prototype.$axios=axios
+Vue.use(common);
 
 /* eslint-disable no-new */
 new Vue({

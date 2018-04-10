@@ -1,6 +1,7 @@
 <style>
 .login{
   min-height: 400px;
+  margin:0 80px;
   padding: 30px;
 }
 .login .warmPic,.login .formdata{
@@ -27,8 +28,8 @@
 <template>
       <div class="login">
         <div class="warmPic">
-          <img  v-show="isLogin==0" src="../assets/warm_pic.jpg" style="width:100%;"/>
-          <img  v-show="isLogin==1" src="../assets/warm_pic1.jpg" style="width:100%;"/>
+          <img v-show="isLogin==0" src="../assets/images/warm_pic.jpg" style="width:100%;"/>
+          <img v-show="isLogin==1" src="../assets/images/warm_pic1.jpg" style="width:100%;"/>
         </div>
         <div class="formdata">
           <span class="text" v-show="isLogin==0">注册新会员</span>

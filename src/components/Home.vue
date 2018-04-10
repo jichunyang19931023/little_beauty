@@ -7,7 +7,7 @@
       </div>
       <ul>
         <li class="article" v-for="article in articleList">
-          <img src="../assets/warm_pic.jpg">
+          <img src="../assets/images/warm_pic.jpg">
           <span class="t">{{article.title}}</span>
           <br><span class="abs">{{article.abs}}</span>
           <br><span class="writer">{{article.user.name}}</span>
@@ -20,7 +20,7 @@
      <div class="title"><span><Icon type="bowtie" />&nbsp;热门文章</span></div>
      <ul>
         <li class="article" v-for="article in articleList">
-          <img src="../assets/warm_pic.jpg">
+          <img src="../assets/images/warm_pic.jpg">
           <span class="t">{{article.title}}</span>
           <br><span class="abs">{{article.abs}}</span>
           <br><span class="writer">{{article.user.name}}</span>
@@ -32,8 +32,7 @@
 </template>
 
 <script>
-export
-default {
+export default {
         name:'HelloWorld',
         data() {
             return {
@@ -41,7 +40,15 @@ default {
             }
         },
         beforeMount: function() {
-            this.loadArticles();
+            var cookieMsg = this.getCookie("userInfo");
+            var username = new Array();
+            username = cookieMsg.split("-");
+            var login = username[username.length-1];
+            if (login != "") {
+              this.loadArticles();
+            }else{
+              this.$router.push('/login/1');
+            }
         },
         methods: {
             loadArticles: function() {
