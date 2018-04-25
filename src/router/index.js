@@ -2,7 +2,14 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login'
 import Home from '@/components/Home'
-import Blog from '@/components/personal/Blog'
+import Blogs from '@/components/personal/Blogs'
+import NewBlog from '@/components/personal/NewBlog'
+import BlogPage from '@/components/personal/BlogPage'
+
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 Vue.use(Router)
 
@@ -20,8 +27,18 @@ export default new Router({
     },
     {
       path: '/blogList',
-      name: 'Blog',
-      component: Blog
+      name: 'Blogs',
+      component: Blogs
+    },
+    {
+      path: '/newBlog',
+      name: 'NewBlog',
+      component: NewBlog
+    },
+    {
+      path: '/BlogPage',
+      name: 'BlogPage',
+      component: BlogPage
     }
   ]
 })

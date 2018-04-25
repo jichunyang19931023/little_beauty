@@ -24,6 +24,37 @@
 .login .but{
   float: right;
 }
+.thumb-image{
+  height: 100px;
+  width: 100px;
+  border: 1px solid #ccc;
+  background: #fdfafa;
+}
+.upload-image{
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100px;
+  height: 100px;
+  opacity: 0;
+}
+.no-image{
+    font-size: 23px;
+    padding-top: 38px;
+}
+
+.demo-spin-icon-load{
+   animation: ani-demo-spin 1s linear infinite;
+}
+@keyframes ani-demo-spin {
+  from { transform: rotate(0deg);}
+  50%  { transform: rotate(180deg);}
+  to   { transform: rotate(360deg);}
+}
+.demo-spin-col{
+  position: relative;
+  margin-left: 32px;
+}
 </style>
 <template>
       <div class="login">
@@ -37,6 +68,21 @@
 
           <!-- 注册模块 -->
           <Form  v-show="isLogin==0" ref="formRegister" :model="formRegister" :rules="ruleRegister" :label-width="80">
+              <FormItem label="头像" prop="image">
+                  <input type="file" v-on:change="upload" class="upload-image" />
+                  <div class="thumb-image">
+                    <Icon class="no-image" v-show="noImage" type="image"></Icon>
+                    <Row v-show="loadImage">
+                      <Col class="demo-spin-col" span="8">
+                          <Spin fix>
+                              <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                              <div>&nbsp;</div>
+                          </Spin>
+                      </Col>
+                  </Row>
+                    <img :src="imageurl">
+                  </div>
+              </FormItem>
               <FormItem label="用户名" prop="username">
                   <Input type="text" v-model="formRegister.username"></Input>
               </FormItem>
@@ -162,7 +208,10 @@ export default {
                         trigger: 'blur'
                     }]
                 },
-                isLogin: 0
+                isLogin: 0,
+                imageurl:"",
+                loadImage:false,
+                noImage:true
             }
         },
         methods: {
@@ -177,8 +226,13 @@ export default {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         var username = this.formRegister.username;
+                        if (!this.imageurl) {
+                          this.$Message.error("头像不能为空！");
+                          return;
+                        }
                         this.$axios.get('/api/user/register', {
                             params: {
+                                image:this.imageurl,
                                 username: this.formRegister.username,
                                 password: this.formRegister.passwd,
                                 mail: this.formRegister.mail
@@ -225,6 +279,29 @@ export default {
             },
             handleReset(name) {
                 this.$refs[name].resetFields();
+            },
+            upload(e){
+              var files = e.target.files;
+              if (files.length > 0) {
+                this.loadImage = true;
+                var formData = new FormData();
+                formData.append("image",files[0]);
+                formData.append("isAvatar",true);
+                this.$axios({
+                      method: "post",
+                      url: '/api/article/uploadImg',
+                      data: formData
+                  }).then((response) => {
+                      if (response.data.code == 200) {
+                          this.loadImage = false;
+                          var url = response.data.info;
+                          if (url != null && url.length > 0) {
+                             this.imageurl = url;
+                             this.noImage = false;
+                          }
+                      }
+                  });
+              }
             }
         },
         beforeMount: function() {

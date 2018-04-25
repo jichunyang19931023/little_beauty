@@ -32,13 +32,10 @@
     color:#ed7c95;
     border-color: #ed7c95;
 }
-.username a{
+.username .namelink{
     font-size: 17px;
     color: #878d9a;
     margin-right: 15px;
-}
-.username a:hover{
-    color: #ec5d80;
 }
 .username img{
     width: 40px;
@@ -54,7 +51,7 @@
                     <div class="layout-logo"><img src="./assets/images/logo.png"></div>
                     <div class="layout-nav">
                         <MenuItem name="1">
-                            首页
+                            <router-link to="/">首页</router-link>
                         </MenuItem>
                         <MenuItem name="2">
                             文章感悟
@@ -70,7 +67,7 @@
                 <div v-if="username" class="username">
                     <Dropdown>
                         <img class="image" src="./assets/images/default.png">
-                        <a href="">{{username}}</a>
+                        <a class="namelink" href="">{{username}}</a>
                         <DropdownMenu slot="list">
                             <DropdownItem>我的资料</DropdownItem>
                             <DropdownItem><router-link to="/blogList">我的博客</router-link></DropdownItem>

@@ -6,13 +6,15 @@
         <span class="more">more</span>
       </div>
       <ul>
-        <li class="article" v-for="article in articleList">
-          <img src="../assets/images/warm_pic.jpg">
-          <span class="t">{{article.title}}</span>
-          <br><span class="abs">{{article.abs}}</span>
-          <br><span class="writer">{{article.user.name}}</span>
-          <span class="time">{{article.createTimeStr}}</span>
-        </li>
+          <li class="article" v-for="article in articleList">
+            <router-link :to="{path:'/BlogPage',query:{id:article.id}}" class="my-color" target="_blank">
+              <img :src="article.imageThumb">
+              <span class="t">{{article.title}}</span>
+              <br><span class="abs">{{article.abs}}</span>
+              <br><span class="writer">{{article.user.name}}</span>
+              <span class="time">{{article.createTimeStr}}</span>
+            </router-link>
+          </li>
       </ul>
     </div>
 
@@ -20,11 +22,13 @@
      <div class="title"><span><Icon type="bowtie" />&nbsp;热门文章</span></div>
      <ul>
         <li class="article" v-for="article in articleList">
-          <img src="../assets/images/warm_pic.jpg">
-          <span class="t">{{article.title}}</span>
-          <br><span class="abs">{{article.abs}}</span>
-          <br><span class="writer">{{article.user.name}}</span>
-          <span class="time">{{article.createTimeStr}}</span>
+          <router-link :to="{path:'/BlogPage',query:{id:article.id}}"  class="my-color" target="_blank">
+            <img :src="article.imageThumb">
+            <span class="t">{{article.title}}</span>
+            <br><span class="abs">{{article.abs}}</span>
+            <br><span class="writer">{{article.user.name}}</span>
+            <span class="time">{{article.createTimeStr}}</span>
+          </router-link>
         </li>
       </ul>
     </div>
@@ -56,12 +60,12 @@ export default {
                     if (response.data.code == 200) {
                         var articles = response.data.info;
                         articles.forEach(function(item){
-                          item.title = item.title.substr(0,10);
-                          item.abs = item.abs.substr(0,50)+"...";
+                          item.title = item.title.substr(0,20);
+                          if (!item.imageThumb) {
+                            item.imageThumb = "";
+                          }
                         });
                         this.articleList = articles;
-                    } else {
-                        this.$Message.error(response.data.msg);
                     }
                 });
             }
@@ -77,10 +81,9 @@ ul {
 }
 li {
   display: inline-block;
-  margin: 0 10px;
 }
 a {
-  color: #42b983;
+  color: #42b983 !important;
 }
 .new_articles,.hot_articles{
     width: 49%;
@@ -93,18 +96,20 @@ a {
   padding: 8px 10px;
   border-bottom: 1px dashed #ec5d80;
   font-size: 16px;
-  color: #ec5d80;
+  color: #ec5d80 !important;
 }
 .new_articles .article,.hot_articles .article{
   padding: 10px 5px;
-  width: 98%;
+  width: 100%;
 }
 .article .time,.title .more{
   float: right;
-  color: #aaa;
+  color: #aaa !important;
 }
 .article .t{
   font-size: 16px;
+  color: #48484c;
+  font-weight: 700;
 }
 .article .abs{
   margin: 8px 0;
@@ -115,11 +120,15 @@ a {
 }
 .article img{
   float: left;
-  width: 110px;
-  height: 110px;
+  width: 25%;
+  height: 120px;
+  margin: 2px 7px 2px 0;
 }
 .article span{
   float: left;
-  max-width: 75%;
+  max-width: 73%;
+}
+.my-color{
+  color: #666 !important;
 }
 </style>
