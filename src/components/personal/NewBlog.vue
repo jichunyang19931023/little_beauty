@@ -54,7 +54,8 @@ export default {
                         this.$Message.error(response.data.msg);
                     }
                 });
-            },publish: function() {
+            },
+            publish: function() {
                 if (this.title == "" || this.content == "") {
                     this.$Message.error('标题或正文不得为空！');
                     return;

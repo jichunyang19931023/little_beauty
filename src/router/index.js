@@ -5,6 +5,7 @@ import Home from '@/components/Home'
 import Blogs from '@/components/personal/Blogs'
 import NewBlog from '@/components/personal/NewBlog'
 import BlogPage from '@/components/personal/BlogPage'
+import Personal from '@/components/personal/Personal'
 
 // require styles
 import 'quill/dist/quill.core.css'
@@ -39,6 +40,11 @@ export default new Router({
       path: '/BlogPage',
       name: 'BlogPage',
       component: BlogPage
+    },
+    {
+      path: '/Personal',
+      name: 'Personal',
+      component: Personal
     }
   ]
 })

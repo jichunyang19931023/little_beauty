@@ -90,10 +90,10 @@ export default {
               var cookieMsg = this.getCookie("userInfo");
               var username = new Array();
               username = cookieMsg.split("-");
-              var person = username[username.length-1];
+              var personId = username[username.length-2];
               this.$axios.get('/api/article/list', {
                 params: {
-                  person: person
+                  personId : personId
                 }
               }).then((response) =>{
                     if (response.data.code == 200) {

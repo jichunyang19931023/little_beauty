@@ -266,7 +266,7 @@ export default {
                                 this.$Message.success('登录成功！');
                                 setTimeout(() => {
                                     this.$router.push('/');
-                                    this.$emit("login",response.data.info.name);
+                                    this.$emit("userchange",response.data.info.name);
                                 },
                                 1000);
                             }else{

@@ -41,6 +41,7 @@
     width: 40px;
     margin: 10px;
     float: left;
+    border-radius: 20px;
 }
 </style>
 <template>
@@ -66,10 +67,10 @@
                 </Menu>
                 <div v-if="username" class="username">
                     <Dropdown>
-                        <img class="image" src="./assets/images/default.png">
+                        <img class="image" :src="avatar">
                         <a class="namelink" href="">{{username}}</a>
                         <DropdownMenu slot="list">
-                            <DropdownItem>我的资料</DropdownItem>
+                            <DropdownItem><router-link to="/personal">个人中心</router-link></DropdownItem>
                             <DropdownItem><router-link to="/blogList">我的博客</router-link></DropdownItem>
                             <DropdownItem>我的评论</DropdownItem>
                             <DropdownItem>我的收藏</DropdownItem>
@@ -87,7 +88,7 @@
             </Header>
             <Content :style="{margin: '20px 150px'}">
                 <Card>
-                    <router-view @login="initUsername"></router-view>
+                    <router-view @userchange="initUsername"></router-view>
                 </Card>
             </Content>
             <Footer class="layout-footer-center">在这里，记录生活中的小美好</Footer>
@@ -99,14 +100,12 @@
     name: 'App',
     data(){
         return {
-            username:""
+            username:"",
+            avatar:""
         }
     },
     beforeMount: function () {
-        var cookieMsg = this.getCookie("userInfo");
-        var username = new Array();
-        username = cookieMsg.split("-");
-        this.username = username[username.length-1];
+        this.loadUser();
     },
     methods: {
         toLogin:function(login){
@@ -125,6 +124,14 @@
         },
         initUsername:function(data){
             this.username = data;
+        },
+        loadUser : function(){
+            this.$axios.get('/api/user/getUserInfo', {}).then((response) =>{
+                if (response.data.code == 200) {
+                    this.avatar = response.data.info.image;
+                    this.username = response.data.info.name;
+                }
+            });
         }
      }
   }

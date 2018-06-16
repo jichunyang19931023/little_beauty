@@ -40,7 +40,8 @@ export default {
         name:'HelloWorld',
         data() {
             return {
-                articleList: []
+                articleList: [],
+                arr : []
             }
         },
         beforeMount: function() {
@@ -56,18 +57,38 @@ export default {
         },
         methods: {
             loadArticles: function() {
+                this.arr = new Array();
+                var vm = this;
+                this.arr.push("http://p748wa0e8.bkt.clouddn.com/%E4%B8%8B%E8%BD%BD.jpg");
+                this.arr.push("http://p748wa0e8.bkt.clouddn.com/%E4%B8%8B%E8%BD%BD%20%281%29.jpg");
+                this.arr.push("http://p748wa0e8.bkt.clouddn.com/u=407254884,898597993&fm=27&gp=0.jpg");
+                this.arr.push("http://p748wa0e8.bkt.clouddn.com/u=28090977,4239975763&fm=27&gp=0.jpg");
+                this.arr.push("http://p748wa0e8.bkt.clouddn.com/u=2757138095,1739115349&fm=27&gp=0.jpg");
+                this.arr.push("http://p748wa0e8.bkt.clouddn.com/u=1394993395,3497243879&fm=27&gp=0.jpg");
+
                 this.$axios.get('/api/article/list', {}).then((response) =>{
                     if (response.data.code == 200) {
                         var articles = response.data.info;
                         articles.forEach(function(item){
                           item.title = item.title.substr(0,20);
                           if (!item.imageThumb) {
-                            item.imageThumb = "";
+                            item.imageThumb = vm.randomImage();
                           }
                         });
                         this.articleList = articles;
                     }
                 });
+            },
+            randomImage : function(){
+                var temp = "";    //temp存放生成的随机数组
+            　  var count=this.arr.length;    
+                for (var i=0;i<count;i++){ 
+                    var num=Math.floor(Math.random()*count); //生成随机数num
+                    console.log(num);
+                    temp = this.arr[num];    //获取arr[num]并放入temp
+                    this.arr.splice(num,1); 
+                    return temp;   
+                }
             }
         }
     }
