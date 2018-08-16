@@ -20,11 +20,11 @@
                   <div class="floatL">{{article.createTimeStr}}</div>
                   <div class=" floatL left-dis-24">
                     <Icon class="comment-color" type="chatbubble-working"></Icon>
-                    <span>1</span>
+                    <span>{{article.commentCount}}</span>
                   </div>
                   <div class=" floatL left-dis-24">
                     <Icon class="collect-color" type="star"></Icon>
-                    <span>0</span>
+                    <span>{{article.collectCount}}</span>
                   </div>
                   <div class=" floatL left-dis-24">
                     <Icon class="like-color" type="heart"></Icon>

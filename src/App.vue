@@ -72,8 +72,6 @@
                         <DropdownMenu slot="list">
                             <DropdownItem><router-link to="/personal">个人中心</router-link></DropdownItem>
                             <DropdownItem><router-link to="/blogList">我的博客</router-link></DropdownItem>
-                            <DropdownItem>我的评论</DropdownItem>
-                            <DropdownItem>我的收藏</DropdownItem>
                             <DropdownItem>联系我们</DropdownItem>
                             <DropdownItem>
                                 <span @click="logout()">退出</span>

@@ -9,6 +9,11 @@
               title="修改资料"
               @on-ok="ok">
               <Form :model="formItem" :label-width="80">
+                <FormItem label="头像">
+                  <img :src="formItem.image" class="image">
+                  <Button type="ghost" shape="circle" class="upload-button">修改头像</Button>
+                  <input type="file" v-on:change="upload" class="upload-image" />
+                </FormItem>
                 <FormItem label="用户名">
                     <Input v-model="formItem.name" placeholder="Enter something..."></Input>
                 </FormItem>
@@ -38,8 +43,8 @@
                 <span class="msg">{{user.msg}}</span>
               </div>
               <div class="tabs">
-                <Tabs value="name1">
-                    <TabPane label="我的博客" name="name1">
+                <Tabs @on-click="collections">
+                    <TabPane label="我的博客" name="blogs">
                       <ul class="myblog floatL">
                         <li class="blog-unit"  v-for="article in articleList">
                           <router-link :to="{path:'/BlogPage',query:{id:article.id}}" target="_blank">
@@ -51,11 +56,11 @@
                                     <div class="floatL">{{article.createTimeStr}}</div>
                                     <div class=" floatL left-dis-24">
                                       <Icon class="comment-color" type="chatbubble-working"></Icon>
-                                      <span>1</span>
+                                      <span>{{article.commentCount}}</span>
                                     </div>
                                     <div class=" floatL left-dis-24">
                                       <Icon class="collect-color" type="star"></Icon>
-                                      <span>0</span>
+                                      <span>{{article.collectCount}}</span>
                                     </div>
                                     <div class=" floatL left-dis-24">
                                       <Icon class="like-color" type="heart"></Icon>
@@ -75,13 +80,30 @@
                         </li>
                       </ul>
                     </TabPane>
-                    <TabPane label="我的收藏" name="name2">
-                      
+                    <TabPane label="我的收藏" name="collections">
+                        <ul class="myblog floatL">
+                        <li class="blog-unit2"  v-for="collection in collectionList">
+                          <router-link :to="{path:'/BlogPage',query:{id:collection.articleId}}" target="_blank">
+                            <h3 class="blog-title bottom-dis-8">{{collection.article.title}}</h3>
+                            <p class="text bottom-dis-8">{{collection.article.abs}}</p>
+                          </router-link>
+                        </li>
+                      </ul>
                     </TabPane>
-                    <TabPane label="我的评论" name="name3">
-                      
+                    <TabPane label="我的评论" name="comments">
+                        <ul class="myblog floatL">
+                        <li class="blog-unit3"  v-for="comment in commentsList">
+                          <span class="username">{{comment.user.name}}</span>&nbsp;{{comment.commentMsg}}
+                          <router-link class="floatR" :to="{path:'/BlogPage',query:{id:comment.articleId}}" target="_blank">
+                            查看详情
+                          </router-link>
+                          <span class="floatR time">{{comment.createTimeStr}}</span>
+                          
+                          <p class="commentMsg">{{comment.comments}}</p>
+                        </li>
+                      </ul>
                     </TabPane>
-                    <TabPane label="我的点赞" name="name4">
+                    <TabPane label="我的点赞" name="likes">
                       
                     </TabPane>
                 </Tabs>
@@ -104,8 +126,11 @@ export default {
                     name: '',
                     mail: '',
                     sex: 'girl',
-                    text: ''
-                }
+                    text: '',
+                    image:""
+                },
+                collectionList:[],
+                commentsList:[]
             }
         },
         beforeMount: function() {
@@ -116,6 +141,7 @@ export default {
             if (login != "") {
               this.loadInfo();
               this.loadArticles();
+              this.loadComments();
             }else{
               this.$router.push('/login/1');
             }
@@ -149,6 +175,25 @@ export default {
                     }
                 });
             },
+            loadComments: function() {
+              this.$axios.get('/api/comments/commentsList', {
+                params: {
+                  articleUserId: this.user.id
+                }
+              }).then((response) =>{
+                    if (response.data.code == 200) {
+                        this.commentsList = response.data.info;
+                        this.commentsList.forEach(function(item){
+                          item.commentMsg = "评论了我的博客：" + item.article.title;
+                          if (item.parentId != 0) {
+                            item.commentMsg = "回复了我：";
+                          }
+                        });
+                    } else {
+                        this.$Message.error(response.data.msg);
+                    }
+              });
+            },
             editArticle: function(id) {
               this.$router.push('/newBlog?id='+id);
             },
@@ -172,10 +217,33 @@ export default {
               this.formItem.mail = this.user.mail;
               this.formItem.sex = this.user.sex==0?'girl':'boy';
               this.formItem.text = this.user.msg;
+              this.formItem.image = this.user.image;
+            },
+            changeImage:function(){
+
+            },
+            upload(e){
+              var files = e.target.files;
+              if (files.length > 0) {
+                this.loadImage = true;
+                var formData = new FormData();
+                formData.append("image",files[0]);
+                formData.append("isAvatar",true);
+                this.$axios({
+                      method: "post",
+                      url: '/api/article/uploadImg',
+                      data: formData
+                  }).then((response) => {
+                      if (response.data.code == 200) {
+                          this.formItem.image = response.data.info;
+                      }
+                  });
+              }
             },
             ok:function() {
               var param = new URLSearchParams()
               param.append('id',this.user.id);
+              param.append('image',this.formItem.image);
               param.append('name',this.formItem.name);
               param.append('mail',this.formItem.mail);
               param.append('sex',this.formItem.sex=='girl'?0:1);
@@ -192,6 +260,25 @@ export default {
                         this.$Message.error(response.data.msg);
                     }
                 });
+            },
+            loadTabList:function(name){
+              if (name == "collections") {
+                this.collections();
+              }
+            },
+            collections:function(){
+              this.$axios.get('/api/collection/collectionList', {
+                params: {
+                  userId: this.user.id
+                }
+              }).then((response) =>{
+                    if (response.data.code == 200) {
+                        this.collectionList = response.data.info;
+                    } else {
+                        this.$Message.error(response.data.msg);
+                    }
+             });
+              
             }
         }
     }
@@ -299,12 +386,20 @@ a {
   font-size: 20px;
   color: #fff;
 }
-.blog-unit{
+.blog-unit,.blog-unit2,.blog-unit3{
     width: 100%;
     padding-left: 1%;
     border-bottom: 1px dashed #e9e9e9;
     padding-top: 16px;
-    height: 140px;
+}
+.blog-unit{
+  height: 140px;
+}
+.blog-unit2{
+    height: 110px;
+}
+.blog-unit3{
+    height: 80px;
 }
 .blog-title{
     font-size: 20px;
@@ -339,5 +434,25 @@ a {
 }
 .article .time{
   color: #aaa;
+}
+.upload-image{
+  position: absolute;
+  left: 100px;
+  top: 32px;
+  width: 100px;
+  opacity: 0;
+}
+.upload-button{
+  margin-top: 32px;
+}
+.username{
+  font-weight: 600;
+}
+.commentMsg{
+  padding: 5px;
+  color: #9b9ea5;
+}
+.time{
+  margin-right: 20px;
 }
 </style>
