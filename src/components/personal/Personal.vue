@@ -22,8 +22,9 @@
                 </FormItem>
                 <FormItem label="性别">
                     <RadioGroup v-model="formItem.sex">
-                        <Radio class="sex" label="girl">妹纸</Radio>
-                        <Radio class="sex" label="boy">汉纸</Radio>
+                        <Radio class="sex" label="girl">女</Radio>
+                        <Radio class="sex" label="boy">男</Radio>
+                        <Radio class="sex" label="secret">保密</Radio>
                     </RadioGroup>
                 </FormItem>
                 <FormItem label="个人签名">
@@ -39,7 +40,7 @@
                 <span class="name">{{user.name}}</span>
                 <br/><span class="mail">邮箱：{{user.mail}}</span>
                 <span class="create_time">注册时间：{{user.createTime}}</span>
-                <span class="create_time">性别：{{user.sex == 0?'妹纸':'汉纸'}}</span>
+                <span class="create_time">性别：{{user.sexStr}}</span>
                 <span class="msg">{{user.msg}}</span>
               </div>
               <div class="tabs">
@@ -68,7 +69,7 @@
                                     </div>
                                 </div>
                           </div>
-                          
+
                           <ul class="unit-con-right floatR">
                             <li class="floatL edit-btn left-dis-8 right-dis-8" @click="editArticle(article.id)">
                               <a class="button-color" target="_blank">编辑</a>
@@ -98,13 +99,13 @@
                             查看详情
                           </router-link>
                           <span class="floatR time">{{comment.createTimeStr}}</span>
-                          
+
                           <p class="commentMsg">{{comment.comments}}</p>
                         </li>
                       </ul>
                     </TabPane>
                     <TabPane label="我的点赞" name="likes">
-                      
+
                     </TabPane>
                 </Tabs>
               </div>
@@ -215,7 +216,12 @@ export default {
               this.modal = true;
               this.formItem.name = this.user.name;
               this.formItem.mail = this.user.mail;
-              this.formItem.sex = this.user.sex==0?'girl':'boy';
+              this.formItem.sex = 'secret';
+              if(this.user.sex == 0){
+                this.formItem.sex = 'girl';
+              }else if(this.user.sex == 1){
+                this.formItem.sex = 'boy';
+              }
               this.formItem.text = this.user.msg;
               this.formItem.image = this.user.image;
             },
@@ -246,7 +252,13 @@ export default {
               param.append('image',this.formItem.image);
               param.append('name',this.formItem.name);
               param.append('mail',this.formItem.mail);
-              param.append('sex',this.formItem.sex=='girl'?0:1);
+              var sex = 2;
+              if(this.formItem.sex=='girl'){
+                sex = 0;
+              }else if(this.formItem.sex=='boy'){
+                sex = 1;
+              }
+              param.append('sex',sex);
               param.append('msg',this.formItem.text);
               this.$axios({
                 method: 'post',
@@ -278,7 +290,7 @@ export default {
                         this.$Message.error(response.data.msg);
                     }
              });
-              
+
             }
         }
     }

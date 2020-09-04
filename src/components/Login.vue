@@ -226,10 +226,10 @@ export default {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         var username = this.formRegister.username;
-                        if (!this.imageurl) {
+                        /*if (!this.imageurl) {
                           this.$Message.error("头像不能为空！");
                           return;
-                        }
+                        }*/
                         this.$axios.get('/api/user/register', {
                             params: {
                                 image:this.imageurl,
