@@ -44,7 +44,7 @@
                 <span class="msg">{{user.msg}}</span>
               </div>
               <div class="tabs">
-                <Tabs @on-click="collections">
+                <Tabs @on-click="getCollections">
                     <TabPane label="我的博客" name="blogs">
                       <ul class="myblog floatL">
                         <li class="blog-unit"  v-for="article in articleList">
@@ -275,13 +275,14 @@ export default {
             },
             loadTabList:function(name){
               if (name == "collections") {
-                this.collections();
+                this.getCollections();
               }
             },
-            collections:function(){
+            getCollections:function(){
               this.$axios.get('/api/collection/collectionList', {
                 params: {
-                  userId: this.user.id
+                  userId: this.user.id,
+                  type: 0
                 }
               }).then((response) =>{
                     if (response.data.code == 200) {

@@ -11,23 +11,20 @@
               <img :src="article.imageThumb">
               <span class="t">{{article.title}}</span>
               <br><span class="abs">{{article.abs}}</span>
-              <br><span class="writer">{{article.user.name}}</span>
+              <br><span class="writer">{{article.username}}</span>
               <span class="time">{{article.createTimeStr}}</span>
             </router-link>
           </li>
       </ul>
     </div>
 
-    <div class="hot_articles">
-     <div class="title"><span><Icon type="bowtie" />&nbsp;热门文章</span></div>
+    <div class="movies">
+     <div class="title"><span><Icon type="bowtie" />&nbsp;电影推荐</span></div>
      <ul>
-        <li class="article" v-for="article in articleList2">
-          <router-link :to="{path:'/BlogPage',query:{id:article.id}}"  class="my-color" target="_blank">
-            <img :src="article.imageThumb">
-            <span class="t">{{article.title}}</span>
-            <br><span class="abs">{{article.abs}}</span>
-            <br><span class="writer">{{article.user.name}}</span>
-            <span class="time">{{article.createTimeStr}}</span>
+        <li class="article" v-for="movie in movieList">
+          <router-link :to="{path:'/BlogPage',query:{id:movie.id}}"  class="my-color" target="_blank">
+            <img :src="movie.imagePath">
+            <span class="t">{{movie.movieName}}</span>
           </router-link>
         </li>
       </ul>
@@ -41,7 +38,7 @@ export default {
         data() {
             return {
                 articleList: [],
-                articleList2 : [],
+                movieList: [],
                 arr : []
             }
         },
@@ -52,6 +49,7 @@ export default {
             var login = username[username.length-1];
             if (login != "") {
               this.loadArticles();
+              this.loadMovies();
             }else{
               this.$router.push('/login/1');
             }
@@ -67,18 +65,19 @@ export default {
                         this.articleList = articles;
                     }
                 });
-
-                this.$axios.get('/api/article/list', {
-                	params: {
-                  		sort: true
-                	}
-            	}).then((response) =>{
+            },
+            loadMovies: function() {
+                this.$axios.get('/api/movie/list', {
+                  params: {
+                    pageNum: 1
+                }
+              }).then((response) =>{
                     if (response.data.code == 200) {
-                        var articles = response.data.info;
-                        articles.forEach(function(item){
-                          item.title = item.title.substr(0,20);
+                        var movies = response.data.info;
+                        movies.forEach(function(item){
+                          item.movieName = item.movieName.substr(0,20);
                         });
-                        this.articleList2 = articles;
+                        this.movieList = movies;
                     }
                 });
             }
@@ -98,20 +97,20 @@ li {
 a {
   color: #42b983 !important;
 }
-.new_articles,.hot_articles{
+.new_articles,.movies{
     width: 49%;
     float: left;
 }
-.hot_articles{
+.movies{
   margin-left: 2%;
 }
-.new_articles .title,.hot_articles .title{
+.new_articles .title,.movies .title{
   padding: 8px 10px;
   border-bottom: 1px dashed #ec5d80;
   font-size: 16px;
   color: #ec5d80 !important;
 }
-.new_articles .article,.hot_articles .article{
+.new_articles .article,.movies .article{
   padding: 10px 5px;
   width: 100%;
 }

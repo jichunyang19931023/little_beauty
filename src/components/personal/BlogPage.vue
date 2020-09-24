@@ -10,7 +10,7 @@
         <span class="title">{{article.title}}</span>
         <div class="items">
           <span>{{article.createTimeStr}}</span>
-          <span class="left-dis-24">{{article.user.name}}</span>
+          <span class="left-dis-24">{{article.username}}</span>
           <span class="left-dis-24">
             <Icon class="comment-color" type="chatbubble-working"></Icon>
             <span>{{article.commentCount}}</span>
@@ -45,18 +45,18 @@
         <li v-for="com in comments" class="commentInfo">
           <p class="info">
             <img class="commentImg floatL" :src="com.user.image">
-            <span class="floatL username">{{com.user.name}}</span>
+            <span class="floatL username">{{com.username}}</span>
             <span class="floatL commentTime">{{com.createTimeStr}}</span>
-            <a @click="reply(com.id, com.user.name)" class="floatR commentReply">回复</a>
+            <a @click="reply(com.id, com.username)" class="floatR commentReply">回复</a>
           </p>
           <p class="commentsMsg">{{com.comments}}</p>
           <ul  class="subList">
             <li v-for="subcom in com.subComment">
               <p>
                 <img class="commentImg floatL" :src="subcom.user.image">
-                <span class="floatL username">{{subcom.user.name}}</span>
+                <span class="floatL username">{{subcom.username}}</span>
                 <span class="floatL re">回复</span>
-                <span class="floatL username">{{com.user.name}}：</span>
+                <span class="floatL username">{{com.username}}：</span>
                 <span class="floatR commentTime">{{subcom.createTimeStr}}</span>
               </p>
               <p class="info commentsMsg">{{subcom.comments}}</p>
@@ -151,7 +151,8 @@ export default {
                 return;
               }
               param.append('userId',this.user.id*1);
-              param.append('articleId',id*1);
+              param.append('realationId',id*1);
+              param.append('type', 0);
               this.$axios({
                 method: 'post',
                 url: '/api/collection/addCollection',
@@ -169,7 +170,8 @@ export default {
             delCollection : function(id){
               var param = new URLSearchParams();
               param.append('userId',this.user.id*1);
-              param.append('articleId',id*1);
+              param.append('realationId',id*1);
+              param.append('type', 0);
               this.$axios({
                 method: 'post',
                 url: '/api/collection/delCollection',
