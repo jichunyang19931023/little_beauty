@@ -126,6 +126,9 @@ a {
 .article .abs{
   margin: 8px 0;
   line-height: 23px;
+  height: 57px;
+  overflow: hidden;
+  width: 100%;
 }
 .article .writer{
   color: #ec5d80;
