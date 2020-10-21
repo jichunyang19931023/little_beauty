@@ -84,9 +84,9 @@
                     <TabPane label="我的收藏" name="collections">
                         <ul class="myblog floatL">
                         <li class="blog-unit2"  v-for="collection in collectionList">
-                          <router-link :to="{path:'/BlogPage',query:{id:collection.articleId}}" target="_blank">
-                            <h3 class="blog-title bottom-dis-8">{{collection.article.title}}</h3>
-                            <p class="text bottom-dis-8">{{collection.article.abs}}</p>
+                          <router-link :to="{path:'/BlogPage',query:{id:collection.relationId}}" target="_blank">
+                            <h3 class="blog-title bottom-dis-8">{{collection.title}}</h3>
+                            <p class="text bottom-dis-8">{{collection.abs}}</p>
                           </router-link>
                         </li>
                       </ul>
@@ -94,8 +94,8 @@
                     <TabPane label="我的评论" name="comments">
                         <ul class="myblog floatL">
                         <li class="blog-unit3"  v-for="comment in commentsList">
-                          <span class="username">{{comment.user.name}}</span>&nbsp;{{comment.commentMsg}}
-                          <router-link class="floatR" :to="{path:'/BlogPage',query:{id:comment.articleId}}" target="_blank">
+                          <span class="username">{{comment.name}}</span>&nbsp;{{comment.commentMsg}}
+                          <router-link class="floatR" :to="{path:'/BlogPage',query:{id:comment.relationId}}" target="_blank">
                             查看详情
                           </router-link>
                           <span class="floatR time">{{comment.createTimeStr}}</span>

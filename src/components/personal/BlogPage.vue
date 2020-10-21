@@ -44,19 +44,19 @@
       <ul v-if="comments.length > 0">
         <li v-for="com in comments" class="commentInfo">
           <p class="info">
-            <img class="commentImg floatL" :src="com.user.image">
-            <span class="floatL username">{{com.username}}</span>
+            <img class="commentImg floatL" :src="com.image">
+            <span class="floatL username">{{com.name}}</span>
             <span class="floatL commentTime">{{com.createTimeStr}}</span>
-            <a @click="reply(com.id, com.username)" class="floatR commentReply">回复</a>
+            <a @click="reply(com.id, com.name)" class="floatR commentReply">回复</a>
           </p>
           <p class="commentsMsg">{{com.comments}}</p>
           <ul  class="subList">
             <li v-for="subcom in com.subComment">
               <p>
-                <img class="commentImg floatL" :src="subcom.user.image">
-                <span class="floatL username">{{subcom.username}}</span>
+                <img class="commentImg floatL" :src="subcom.image">
+                <span class="floatL username">{{subcom.name}}</span>
                 <span class="floatL re">回复</span>
-                <span class="floatL username">{{com.username}}：</span>
+                <span class="floatL username">{{com.name}}：</span>
                 <span class="floatR commentTime">{{subcom.createTimeStr}}</span>
               </p>
               <p class="info commentsMsg">{{subcom.comments}}</p>
@@ -65,7 +65,7 @@
           <div style="clear:both;"></div>
         </li>
       </ul>
-      <p class="floatL replyPerson" v-if="commentor !=''">回复{{this.commentor}}：</p>
+      <p class="floatL replyPerson" v-if="commentor !=''">回复&nbsp;&nbsp;{{this.commentor}}：</p>
       <textarea class="writeComments" placeholder="在这里留下评论吧~" v-model="commentsContent"></textarea>
       <Button type="ghost" shape="circle" class="floatR commentButton" @click="addComment(article.id)">评论</Button>
     </div>
@@ -97,7 +97,8 @@ export default {
                         this.$axios.get('/api/collection/checkCollection', {
                           params: {
                             userId: this.user.id*1,
-                            articleId:id*1
+                            relationId:id*1,
+                            type:0
                           }
                         }).then((response) =>{
                               if (response.data.code == 200) {
@@ -151,7 +152,7 @@ export default {
                 return;
               }
               param.append('userId',this.user.id*1);
-              param.append('realationId',id*1);
+              param.append('relationId',id*1);
               param.append('type', 0);
               this.$axios({
                 method: 'post',
