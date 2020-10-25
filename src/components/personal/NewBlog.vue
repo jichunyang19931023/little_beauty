@@ -11,6 +11,7 @@
 
 <script>
 import {quillEditor} from 'vue-quill-editor'
+import config from "../../../config/global"
 export default {
         name:'editor',
         components: {
@@ -21,7 +22,8 @@ export default {
                 id:"",
                 title: "",
                 content: '',
-                editorOption: {}
+                editorOption: {},
+                config:config
             }
         },
         mounted() {
@@ -119,7 +121,7 @@ export default {
                 }).then((response) => {
                     if (response.data.code == 200) {
                         var filePath = response.data.info.filePath;
-                        var url = "http://127.0.0.1:8080/api/article/downloadFile?fileUrl=" + filePath;
+                        var url = this.config.base_path + "/api/article/downloadFile?fileUrl=" + filePath;
                         if (url != null && url.length > 0) {
                            vm.addImgRange = vm.$refs.myQuillEditor.quill.getSelection();
                            var index = vm.addImgRange != null?vm.addImgRange.index:0;

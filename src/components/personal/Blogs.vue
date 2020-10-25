@@ -97,7 +97,7 @@ export default {
                 }
               }).then((response) =>{
                     if (response.data.code == 200) {
-                        var articles = response.data.info;
+                        var articles = response.data.info.records;
                         articles.forEach(function(item){
                           item.title = item.title.substr(0,20);
                         });

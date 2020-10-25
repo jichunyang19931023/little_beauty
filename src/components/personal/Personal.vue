@@ -166,7 +166,7 @@ export default {
                 }
               }).then((response) =>{
                     if (response.data.code == 200) {
-                        var articles = response.data.info;
+                        var articles = response.data.info.records;
                         articles.forEach(function(item){
                           item.title = item.title.substr(0,20);
                         });
@@ -185,7 +185,7 @@ export default {
                     if (response.data.code == 200) {
                         this.commentsList = response.data.info;
                         this.commentsList.forEach(function(item){
-                          item.commentMsg = "评论了我的博客：" + item.article.title;
+                          item.commentMsg = "评论了我的博客：" + item.title;
                           if (item.parentId != 0) {
                             item.commentMsg = "回复了我：";
                           }
@@ -241,7 +241,7 @@ export default {
                       data: formData
                   }).then((response) => {
                       if (response.data.code == 200) {
-                          this.formItem.image = response.data.info;
+                          this.formItem.image = response.data.info.filePath;
                       }
                   });
               }
