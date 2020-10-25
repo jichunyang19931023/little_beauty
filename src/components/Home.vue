@@ -7,7 +7,7 @@
       </div>
       <ul>
           <li class="article" v-for="article in articleList">
-            <router-link :to="{path:'/BlogPage',query:{id:article.id}}" class="my-color" target="_blank">
+            <router-link :to="{path:'/blogPage',query:{id:article.id}}" class="my-color" target="_blank">
               <img :src="article.imageThumb">
               <span class="t">{{article.title}}</span>
               <br><span class="abs">{{article.abs}}</span>
@@ -19,12 +19,17 @@
     </div>
 
     <div class="movies">
-     <div class="title"><span><Icon type="bowtie" />&nbsp;电影推荐</span></div>
+     <div class="title">
+      <span><Icon type="bowtie" />&nbsp;电影推荐</span>
+      <span class="more">more</span>
+    </div>
+     
      <ul>
         <li class="article" v-for="movie in movieList">
-          <router-link :to="{path:'/BlogPage',query:{id:movie.id}}"  class="my-color" target="_blank">
+          <router-link :to="{path:'/blogPage',query:{id:movie.id}}"  class="my-color" target="_blank">
             <img :src="movie.imagePath">
             <span class="t">{{movie.movieName}}</span>
+            <br><span class="movie-abs">{{movie.introduction}}</span>
           </router-link>
         </li>
       </ul>
@@ -58,7 +63,7 @@ export default {
             loadArticles: function() {
                 this.$axios.get('/api/article/list', {}).then((response) =>{
                     if (response.data.code == 200) {
-                        var articles = response.data.info;
+                        var articles = response.data.info.records;
                         articles.forEach(function(item){
                           item.title = item.title.substr(0,20);
                         });
@@ -73,9 +78,11 @@ export default {
                 }
               }).then((response) =>{
                     if (response.data.code == 200) {
-                        var movies = response.data.info;
+                        var movies = response.data.info.records;
                         movies.forEach(function(item){
-                          item.movieName = item.movieName.substr(0,20);
+                          item.movieName = item.movieName.substr(0,22);
+                          item.imagePath = "http://127.0.0.1:8080/api/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.introduction = item.introduction.substr(0,70) + "...";
                         });
                         this.movieList = movies;
                     }
@@ -130,6 +137,7 @@ a {
   overflow: hidden;
   width: 100%;
 }
+
 .article .writer{
   color: #ec5d80;
 }
@@ -145,5 +153,12 @@ a {
 }
 .my-color{
   color: #666 !important;
+}
+.movie-abs {
+    margin: 8px 0;
+    line-height: 23px;
+    height: 70px;
+    overflow: hidden;
+    width: 100%;
 }
 </style>

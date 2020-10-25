@@ -55,10 +55,10 @@
                             <router-link to="/">首页</router-link>
                         </MenuItem>
                         <MenuItem name="2">
-                            文章感悟
+                            <router-link to="/articleList">文章感悟</router-link>
                         </MenuItem>
                         <MenuItem name="3">
-                            电影推荐
+                            <router-link to="/movieList">电影推荐</router-link>
                         </MenuItem>
                         <MenuItem name="4">
                             花花草草

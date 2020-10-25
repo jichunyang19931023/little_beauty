@@ -6,6 +6,8 @@ import Blogs from '@/components/personal/Blogs'
 import NewBlog from '@/components/personal/NewBlog'
 import BlogPage from '@/components/personal/BlogPage'
 import Personal from '@/components/personal/Personal'
+import ArticleList from '@/components/ArticleList'
+import MovieList from '@/components/MovieList'
 
 // require styles
 import 'quill/dist/quill.core.css'
@@ -37,14 +39,24 @@ export default new Router({
       component: NewBlog
     },
     {
-      path: '/BlogPage',
+      path: '/blogPage',
       name: 'BlogPage',
       component: BlogPage
     },
     {
-      path: '/Personal',
+      path: '/personal',
       name: 'Personal',
       component: Personal
+    },
+    {
+      path: '/articleList',
+      name: 'ArticleList',
+      component: ArticleList
+    },
+    {
+      path: '/movieList',
+      name: 'MovieList',
+      component: MovieList
     }
   ]
 })

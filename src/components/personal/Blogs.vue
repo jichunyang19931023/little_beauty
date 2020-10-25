@@ -11,7 +11,7 @@
     </h1>
     <ul class="floatL">
       <li class="blog-unit"  v-for="article in articleList">
-        <router-link :to="{path:'/BlogPage',query:{id:article.id}}" target="_blank">
+        <router-link :to="{path:'/blogPage',query:{id:article.id}}" target="_blank">
           <h3 class="blog-title bottom-dis-8">{{article.title}}</h3>
           <p class="text bottom-dis-8">{{article.abs}}</p>
         </router-link>
@@ -49,7 +49,7 @@
       </div>
       <ul>
         <li class="article floatL" v-for="article in articleList">
-          <router-link :to="{path:'/BlogPage',query:{id:article.id}}" target="_blank">
+          <router-link :to="{path:'/blogPage',query:{id:article.id}}" target="_blank">
             <span class="t">{{article.title}}</span>
             <span class="time">{{article.createTimeStr}}</span>
           </router-link>

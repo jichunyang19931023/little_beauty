@@ -48,7 +48,7 @@
                     <TabPane label="我的博客" name="blogs">
                       <ul class="myblog floatL">
                         <li class="blog-unit"  v-for="article in articleList">
-                          <router-link :to="{path:'/BlogPage',query:{id:article.id}}" target="_blank">
+                          <router-link :to="{path:'/blogPage',query:{id:article.id}}" target="_blank">
                             <h3 class="blog-title bottom-dis-8">{{article.title}}</h3>
                             <p class="text bottom-dis-8">{{article.abs}}</p>
                           </router-link>
@@ -84,7 +84,7 @@
                     <TabPane label="我的收藏" name="collections">
                         <ul class="myblog floatL">
                         <li class="blog-unit2"  v-for="collection in collectionList">
-                          <router-link :to="{path:'/BlogPage',query:{id:collection.relationId}}" target="_blank">
+                          <router-link :to="{path:'/blogPage',query:{id:collection.relationId}}" target="_blank">
                             <h3 class="blog-title bottom-dis-8">{{collection.title}}</h3>
                             <p class="text bottom-dis-8">{{collection.abs}}</p>
                           </router-link>
@@ -95,7 +95,7 @@
                         <ul class="myblog floatL">
                         <li class="blog-unit3"  v-for="comment in commentsList">
                           <span class="username">{{comment.name}}</span>&nbsp;{{comment.commentMsg}}
-                          <router-link class="floatR" :to="{path:'/BlogPage',query:{id:comment.relationId}}" target="_blank">
+                          <router-link class="floatR" :to="{path:'/blogPage',query:{id:comment.relationId}}" target="_blank">
                             查看详情
                           </router-link>
                           <span class="floatR time">{{comment.createTimeStr}}</span>

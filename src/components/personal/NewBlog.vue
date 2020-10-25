@@ -118,7 +118,8 @@ export default {
                     data: formData
                 }).then((response) => {
                     if (response.data.code == 200) {
-                        var url = response.data.info;
+                        var filePath = response.data.info.filePath;
+                        var url = "http://127.0.0.1:8080/api/article/downloadFile?fileUrl=" + filePath;
                         if (url != null && url.length > 0) {
                            vm.addImgRange = vm.$refs.myQuillEditor.quill.getSelection();
                            var index = vm.addImgRange != null?vm.addImgRange.index:0;
