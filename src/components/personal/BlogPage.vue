@@ -171,7 +171,7 @@ export default {
             delCollection : function(id){
               var param = new URLSearchParams();
               param.append('userId',this.user.id*1);
-              param.append('realationId',id*1);
+              param.append('relationId',id*1);
               param.append('type', 0);
               this.$axios({
                 method: 'post',

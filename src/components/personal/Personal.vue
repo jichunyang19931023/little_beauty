@@ -116,6 +116,7 @@
 </template>
 
 <script>
+import config from "../../../config/global"
 export default {
         name:'HelloWorld',
         data() {
@@ -128,7 +129,8 @@ export default {
                     mail: '',
                     sex: 'girl',
                     text: '',
-                    image:""
+                    image:"",
+                    config:config
                 },
                 collectionList:[],
                 commentsList:[]
@@ -241,7 +243,8 @@ export default {
                       data: formData
                   }).then((response) => {
                       if (response.data.code == 200) {
-                          this.formItem.image = response.data.info.filePath;
+                        console.log("99"+config.base_path);
+                          this.formItem.image = config.base_path + "/api/article/downloadFile?fileUrl=" + response.data.info.filePath;
                       }
                   });
               }

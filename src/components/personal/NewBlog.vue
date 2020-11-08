@@ -121,6 +121,7 @@ export default {
                 }).then((response) => {
                     if (response.data.code == 200) {
                         var filePath = response.data.info.filePath;
+                        console.log(config);
                         var url = this.config.base_path + "/api/article/downloadFile?fileUrl=" + filePath;
                         if (url != null && url.length > 0) {
                            vm.addImgRange = vm.$refs.myQuillEditor.quill.getSelection();
