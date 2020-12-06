@@ -18,12 +18,14 @@
 </template>
 
 <script>
+import config from "../../config/global"
 export default {
         name:'HelloWorld',
         data() {
             return {
                 movieList: [],
-                arr : []
+                arr : [],
+                config:config
             }
         },
         beforeMount: function() {
@@ -48,7 +50,7 @@ export default {
                     if (response.data.code == 200) {
                         var movies = response.data.info.records;
                         movies.forEach(function(item){
-                          item.imagePath = "http://127.0.0.1:8080/api/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.imagePath = this.config.base_path + "/api/article/downloadFile?fileUrl=" + item.imagePath;
                         });
                         this.movieList = movies;
                     }
