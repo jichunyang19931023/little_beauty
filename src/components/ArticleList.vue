@@ -93,6 +93,7 @@ a {
   color: #aaa !important;
 }
 .article .t{
+  margin-top: 10px;
   font-size: 16px;
   color: #48484c;
   font-weight: 700;
@@ -100,7 +101,7 @@ a {
 .article .abs{
   margin: 8px 0;
   line-height: 23px;
-  height: 57px;
+  height: 23px;
   overflow: hidden;
   width: 100%;
 }
@@ -110,8 +111,8 @@ a {
 }
 .article img{
   float: left;
-  width: 15%;
-  height: 120px;
+  width: 11%;
+  height: 100px;
   margin: 2px 2% 2px 0;
 }
 .article span{

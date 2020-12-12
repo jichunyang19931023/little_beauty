@@ -28,7 +28,7 @@
                     </RadioGroup>
                 </FormItem>
                 <FormItem label="个人签名">
-                    <Input v-model="formItem.text" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
+                    <Input v-model="formItem.text" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="输入个人签名..."></Input>
                 </FormItem>
             </Form>
         </Modal>
@@ -41,7 +41,9 @@
                 <br/><span class="mail">邮箱：{{user.mail}}</span>
                 <span class="create_time">注册时间：{{user.createTime}}</span>
                 <span class="create_time">性别：{{user.sexStr}}</span>
-                <span class="msg">{{user.msg}}</span>
+              </div>
+              <div class="msg-info">
+                <span class="msg">个人签名：{{user.msg?user.msg:'这个小朋友还没来得及写个人签名呢~'}}</span>
               </div>
               <div class="tabs">
                 <Tabs @on-click="getCollections">
@@ -348,8 +350,8 @@ a {
 }
 .image{
   float: left;
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 10px;
   margin: 2px 7px 2px 0;
 }
@@ -470,5 +472,9 @@ a {
 }
 .time{
   margin-right: 20px;
+}
+.msg-info{
+    float: left;
+    margin-top: 10px;
 }
 </style>

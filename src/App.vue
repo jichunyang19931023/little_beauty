@@ -39,6 +39,7 @@
 }
 .username img{
     width: 40px;
+    height: 40px;
     margin: 10px;
     float: left;
     border-radius: 20px;
