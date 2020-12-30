@@ -92,7 +92,7 @@ export default {
         },
         methods: {
             loadInfo: function(id) {
-                this.$axios.get('/api/webapi/user/getUserInfo', {}).then((response) =>{
+                this.$axios.get('/api/webapi/auth/user/getUserInfo', {}).then((response) =>{
                     if (response.data.code == 200) {
                         this.user = response.data.info;
                         this.$axios.get('/api/webapi/auth/collection/checkCollection', {
