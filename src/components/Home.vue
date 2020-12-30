@@ -61,7 +61,7 @@ export default {
         },
         methods: {
             loadArticles: function() {
-                this.$axios.get('/api/article/list', {}).then((response) =>{
+                this.$axios.get('/api/webapi/auth/article/list', {}).then((response) =>{
                     if (response.data.code == 200) {
                         var articles = response.data.info.records;
                         articles.forEach(function(item){
@@ -72,7 +72,7 @@ export default {
                 });
             },
             loadMovies: function() {
-                this.$axios.get('/api/movie/list', {
+                this.$axios.get('/api/webapi/auth/movie/list', {
                   params: {
                     pageNum: 1
                 }
@@ -81,7 +81,7 @@ export default {
                         var movies = response.data.info.records;
                         movies.forEach(function(item){
                           item.movieName = item.movieName.substr(0,22);
-                          item.imagePath = "http://127.0.0.1:8080/api/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.imagePath = "http://127.0.0.1:8080/api/webapi/auth/article/downloadFile?fileUrl=" + item.imagePath;
                           item.introduction = item.introduction.substr(0,70) + "...";
                         });
                         this.movieList = movies;

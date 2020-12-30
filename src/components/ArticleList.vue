@@ -41,7 +41,7 @@ export default {
         },
         methods: {
             loadArticles: function() {
-                this.$axios.get('/api/article/list', {
+                this.$axios.get('/api/webapi/auth/article/list', {
                     params: {
                       pageNum: 1,
                       pageSize: 10

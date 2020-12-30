@@ -153,7 +153,7 @@ export default {
         },
         methods: {
             loadInfo: function() {
-                this.$axios.get('/api/user/getUserInfo', {}).then((response) =>{
+                this.$axios.get('/api/user/webapi/getUserInfo', {}).then((response) =>{
                     if (response.data.code == 200) {
                         this.user = response.data.info;
                     }
@@ -164,7 +164,7 @@ export default {
               var username = new Array();
               username = cookieMsg.split("-");
               var personId = username[username.length-2];
-              this.$axios.get('/api/article/list', {
+              this.$axios.get('/api/webapi/auth/article/list', {
                 params: {
                   personId: personId
                 }
@@ -181,7 +181,7 @@ export default {
                 });
             },
             loadComments: function() {
-              this.$axios.get('/api/comments/commentsList', {
+              this.$axios.get('/api/webapi/auth/comments/commentsList', {
                 params: {
                   articleUserId: this.user.id
                 }
@@ -203,7 +203,7 @@ export default {
               this.$router.push('/newBlog?id='+id);
             },
             delArticle: function(id) {
-              this.$axios.get('/api/article/delArticle', {
+              this.$axios.get('/api/webapi/auth/article/delArticle', {
                 params: {
                   id: id
                 }
@@ -241,12 +241,12 @@ export default {
                 formData.append("isAvatar",true);
                 this.$axios({
                       method: "post",
-                      url: '/api/article/uploadImg',
+                      url: '/api/webapi/auth/article/uploadImg',
                       data: formData
                   }).then((response) => {
                       if (response.data.code == 200) {
                         console.log("99"+config.base_path);
-                          this.formItem.image = config.base_path + "/api/article/downloadFile?fileUrl=" + response.data.info.filePath;
+                          this.formItem.image = config.base_path + "/api/webapi/auth/article/downloadFile?fileUrl=" + response.data.info.filePath;
                       }
                   });
               }
@@ -267,7 +267,7 @@ export default {
               param.append('msg',this.formItem.text);
               this.$axios({
                 method: 'post',
-                url: '/api/user/editUser',
+                url: '/api/webapi/auth/user/editUser',
                 data:param
             }).then((response) =>{
                     if (response.data.code == 200) {
@@ -284,7 +284,7 @@ export default {
               }
             },
             getCollections:function(){
-              this.$axios.get('/api/collection/collectionList', {
+              this.$axios.get('/api/webapi/auth/collection/collectionList', {
                 params: {
                   userId: this.user.id,
                   type: 0

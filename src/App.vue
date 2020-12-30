@@ -111,7 +111,7 @@
             this.$router.push('/login/'+login);
         },
         logout:function(){
-            this.$axios.get('/api/user/loginout', {}).then((response) => {
+            this.$axios.get('/api/webapi/user/loginout', {}).then((response) => {
 
                     if (response.data.code == 200) {
                         this.username = "";
@@ -125,7 +125,7 @@
             this.username = data;
         },
         loadUser : function(){
-            this.$axios.get('/api/user/getUserInfo', {}).then((response) =>{
+            this.$axios.get('/api/webapi/auth/user/getUserInfo', {}).then((response) =>{
                 if (response.data.code == 200) {
                     this.avatar = response.data.info.image;
                     this.username = response.data.info.name;

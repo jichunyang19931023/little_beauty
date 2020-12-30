@@ -43,7 +43,7 @@ export default {
         },
         methods: {
             loadArticle: function() {
-              this.$axios.get('/api/article/getArticleById', {
+              this.$axios.get('/api/webapi/auth/article/getArticleById', {
                 params: {
                   id: this.id
                 }
@@ -70,7 +70,7 @@ export default {
                 if (this.id) {
                     this.$axios({
                       method: "post",
-                      url: '/api/article/editArticle',
+                      url: '/api/webapi/auth/article/editArticle',
                       data: {
                           id:this.id,
                           title: this.title,
@@ -95,7 +95,7 @@ export default {
                 }
                 this.$axios({
                     method: "post",
-                    url: '/api/article/addArticle',
+                    url: '/api/webapi/auth/article/addArticle',
                     params: {
                         title: this.title,
                         content: this.content,
@@ -116,13 +116,13 @@ export default {
                 formData.append("image",fileInput.files[0]);
                 this.$axios({
                     method: "post",
-                    url: '/api/article/uploadImg',
+                    url: '/api/webapi/auth/article/uploadImg',
                     data: formData
                 }).then((response) => {
                     if (response.data.code == 200) {
                         var filePath = response.data.info.filePath;
                         console.log(config);
-                        var url = this.config.base_path + "/api/article/downloadFile?fileUrl=" + filePath;
+                        var url = this.config.base_path + "/api/webapi/auth/article/downloadFile?fileUrl=" + filePath;
                         if (url != null && url.length > 0) {
                            vm.addImgRange = vm.$refs.myQuillEditor.quill.getSelection();
                            var index = vm.addImgRange != null?vm.addImgRange.index:0;

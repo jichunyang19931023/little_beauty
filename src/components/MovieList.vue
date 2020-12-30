@@ -41,7 +41,7 @@ export default {
         },
         methods: {
             loadMovies: function() {
-                this.$axios.get('/api/movie/list', {
+                this.$axios.get('/api/webapi/auth/movie/list', {
                     params: {
                       pageNum: 1,
                       pageSize: 10
@@ -50,7 +50,7 @@ export default {
                     if (response.data.code == 200) {
                         var movies = response.data.info.records;
                         movies.forEach(function(item){
-                          item.imagePath = this.config.base_path + "/api/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.imagePath = this.config.base_path + "/api/webapi/auth/article/downloadFile?fileUrl=" + item.imagePath;
                         });
                         this.movieList = movies;
                     }

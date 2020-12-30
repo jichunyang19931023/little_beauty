@@ -126,7 +126,7 @@ export default {
                     return callback(new Error('用户名不能为空'));
                 }
                 // 模拟异步验证效果
-                this.$axios.get('/api/user/checkUsername', {
+                this.$axios.get('/api/webapi/user/checkUsername', {
                     params: {
                         username: this.formRegister.username
                     }
@@ -230,7 +230,7 @@ export default {
                           this.$Message.error("头像不能为空！");
                           return;
                         }*/
-                        this.$axios.get('/api/user/register', {
+                        this.$axios.get('/api/webapi/user/register', {
                             params: {
                                 image:this.imageurl,
                                 username: this.formRegister.username,
@@ -254,14 +254,14 @@ export default {
                 })
             },
             loginSubmit(name) {
-                this.$refs[name].validate((valid) => {
+                this.$refs.formLogin.validate((valid) => {
                     if (valid) {
-                        this.$axios.get('/api/user/login', {
-                            params: {
-                                username: this.formLogin.username,
-                                password: this.formLogin.passwd
-                            }
-                        }).then((response) => {
+                        this.$axios.post('/api/webapi/user/login', 
+                                {
+                                  username: this.formLogin.username,
+                                  password: this.formLogin.passwd
+                                }
+                        ).then((response) => {
                             if (response.data.code == 200) {
                                 this.$Message.success('登录成功！');
                                 setTimeout(() => {
@@ -289,7 +289,7 @@ export default {
                 formData.append("isAvatar",true);
                 this.$axios({
                       method: "post",
-                      url: '/api/article/uploadImg',
+                      url: '/api/webapi/article/uploadImg',
                       data: formData
                   }).then((response) => {
                       if (response.data.code == 200) {

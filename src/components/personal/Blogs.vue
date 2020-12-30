@@ -91,7 +91,7 @@ export default {
               var username = new Array();
               username = cookieMsg.split("-");
               var personId = username[username.length-2];
-              this.$axios.get('/api/article/list', {
+              this.$axios.get('/api/webapi/auth/article/list', {
                 params: {
                   personId : personId
                 }
@@ -111,7 +111,7 @@ export default {
               this.$router.push('/newBlog?id='+id);
             },
             delArticle: function(id) {
-              this.$axios.get('/api/article/delArticle', {
+              this.$axios.get('/api/webapi/auth/article/delArticle', {
                 params: {
                   id: id
                 }

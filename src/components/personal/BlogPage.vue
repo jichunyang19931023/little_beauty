@@ -91,10 +91,10 @@ export default {
         },
         methods: {
             loadInfo: function(id) {
-                this.$axios.get('/api/user/getUserInfo', {}).then((response) =>{
+                this.$axios.get('/api/webapi/user/getUserInfo', {}).then((response) =>{
                     if (response.data.code == 200) {
                         this.user = response.data.info;
-                        this.$axios.get('/api/collection/checkCollection', {
+                        this.$axios.get('/api/webapi/auth/collection/checkCollection', {
                           params: {
                             userId: this.user.id*1,
                             relationId:id*1,
@@ -116,7 +116,7 @@ export default {
               var id = this.$route.query.id;
               this.loadInfo(id);
               this.loadComments(id);
-              this.$axios.get('/api/article/getArticleById', {
+              this.$axios.get('/api/webapi/auth/article/getArticleById', {
                 params: {
                   id: id
                 }
@@ -133,7 +133,7 @@ export default {
               this.$router.push('/newBlog?id='+id);
             },
             delArticle: function(id) {
-              this.$axios.get('/api/article/delArticle', {
+              this.$axios.get('/api/webapi/auth/article/delArticle', {
                 params: {
                   id: id
                 }
@@ -156,7 +156,7 @@ export default {
               param.append('type', 0);
               this.$axios({
                 method: 'post',
-                url: '/api/collection/addCollection',
+                url: '/api/webapi/auth/collection/addCollection',
                 data:param
               }).then((response) =>{
                     if (response.data.code == 200) {
@@ -175,7 +175,7 @@ export default {
               param.append('type', 0);
               this.$axios({
                 method: 'post',
-                url: '/api/collection/delCollection',
+                url: '/api/webapi/auth/collection/delCollection',
                 data:param
               }).then((response) =>{
                     if (response.data.code == 200) {
@@ -188,7 +188,7 @@ export default {
               });
             },
             loadComments: function(id) {
-              this.$axios.get('/api/comments/list', {
+              this.$axios.get('/api/webapi/auth/comments/list', {
                 params: {
                   articleId: id
                 }
@@ -234,7 +234,7 @@ export default {
               param.append('parentId',this.parentId);
               this.$axios({
                 method: 'post',
-                url: '/api/comments/addComments',
+                url: '/api/webapi/auth/comments/addComments',
                 data:param
               }).then((response) =>{
                     if (response.data.code == 200) {
