@@ -126,7 +126,11 @@ export default {
         }
     }
 </script>
-
+<style>
+  .common-content{
+    margin: 20px 150px;
+  }
+</style>
 <style scoped>
 .comment-color{
   color: #75b7e9;

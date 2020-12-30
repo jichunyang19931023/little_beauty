@@ -2,11 +2,11 @@
   <div>
     <div class="new_movies">
       <div class="title">
-        <span><Icon type="bowtie" />&nbsp;电影推荐</span>
+        <span><Icon type="bowtie" />&nbsp;看个电影</span>
       </div>
       <ul>
           <li class="movie" v-for="movie in movieList">
-            <router-link :to="{path:'/moviePage',query:{id:movie.id}}" class="my-color" target="_blank">
+            <router-link :to="{path:'/moviePage',query:{id:movie.id}}" class="my-color">
               <img :src="movie.imagePath">
               <span class="t">{{movie.movieName}}</span>
               <br><span class="movie-abs">{{movie.introduction}}</span>
@@ -18,14 +18,12 @@
 </template>
 
 <script>
-import config from "../../config/global"
 export default {
         name:'HelloWorld',
         data() {
             return {
                 movieList: [],
-                arr : [],
-                config:config
+                arr : []
             }
         },
         beforeMount: function() {
@@ -50,7 +48,8 @@ export default {
                     if (response.data.code == 200) {
                         var movies = response.data.info.records;
                         movies.forEach(function(item){
-                          item.imagePath = this.config.base_path + "/api/webapi/auth/article/downloadFile?fileUrl=" + item.imagePath;
+                          var url = "/api/webapi/auth/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.imagePath = url;
                         });
                         this.movieList = movies;
                     }
@@ -61,6 +60,11 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<style>
+  .common-content{
+    margin: 20px 150px;
+  }
+</style>
 <style scoped>
 ul {
   list-style-type: none;

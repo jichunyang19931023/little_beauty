@@ -8,6 +8,7 @@ import BlogPage from '@/components/personal/BlogPage'
 import Personal from '@/components/personal/Personal'
 import ArticleList from '@/components/ArticleList'
 import MovieList from '@/components/MovieList'
+import MoviePage from '@/components/MoviePage'
 
 // require styles
 import 'quill/dist/quill.core.css'
@@ -57,6 +58,11 @@ export default new Router({
       path: '/movieList',
       name: 'MovieList',
       component: MovieList
+    },
+    {
+      path: '/moviePage',
+      name: 'MoviePage',
+      component: MoviePage
     }
   ]
 })

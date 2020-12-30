@@ -45,6 +45,11 @@
     border-radius: 20px;
 }
 </style>
+<style>
+  .common-content{
+    margin: 20px 150px;
+  }
+</style>
 <template>
     <div class="layout">
         <Layout>
@@ -56,13 +61,16 @@
                             <router-link to="/">首页</router-link>
                         </MenuItem>
                         <MenuItem name="2">
-                            <router-link to="/articleList">文章感悟</router-link>
+                            <router-link to="/articleList">日常小温暖</router-link>
                         </MenuItem>
                         <MenuItem name="3">
-                            <router-link to="/movieList">电影推荐</router-link>
+                            <router-link to="/movieList">看个电影呗</router-link>
                         </MenuItem>
                         <MenuItem name="4">
-                            花花草草
+                            <router-link to="/personal">我的小角落</router-link>
+                        </MenuItem>
+                        <MenuItem name="5">
+                            <router-link to="/personal">发泄小黑屋</router-link>
                         </MenuItem>
                     </div>
                 </Menu>
@@ -85,7 +93,7 @@
                   <Button @click="toLogin(0)">注册</Button>
                 </div>
             </Header>
-            <Content :style="{margin: '20px 150px'}">
+            <Content class="common-content">
                 <Card>
                     <router-view @userchange="initUsername"></router-view>
                 </Card>

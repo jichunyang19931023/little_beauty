@@ -2,11 +2,11 @@
   <div>
     <div class="new_articles">
       <div class="title">
-        <span><Icon type="heart" />&nbsp;文章感悟</span>
+        <span><Icon type="heart" />&nbsp;日常小温暖</span>
       </div>
       <ul>
           <li class="article" v-for="article in articleList">
-            <router-link :to="{path:'/blogPage',query:{id:article.id}}" class="my-color" target="_blank">
+            <router-link :to="{path:'/blogPage',query:{id:article.id}}" class="my-color">
               <img :src="article.imageThumb">
               <span class="t">{{article.title}}</span>
               <br><span class="abs">{{article.abs}}</span>
@@ -59,7 +59,11 @@ export default {
         }
     }
 </script>
-
+<style>
+  .common-content{
+    margin: 20px 150px;
+  }
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 ul {

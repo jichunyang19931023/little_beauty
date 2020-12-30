@@ -28,11 +28,11 @@
             <span v-show="hasCollected">已收藏</span>
             <span v-show="!hasCollected">收藏</span>
           </span>
-          <span class="floatR left-dis-24 cursor" @click="delArticle(article.id)">
+          <span v-if="canEdit" class="floatR left-dis-24 cursor" @click="delArticle(article.id)">
             <Icon class="trash-color" type="trash-b"></Icon>
             <span>删除</span>
           </span>
-          <span class="floatR cursor"  @click="editArticle(article.id)">
+          <span v-if="canEdit" class="floatR cursor"  @click="editArticle(article.id)">
             <Icon class="edit-color" type="edit"></Icon>
             <span>编辑</span>
           </span>
@@ -83,7 +83,8 @@ export default {
                 comments:[],
                 commentsContent:"",
                 parentId:0,
-                commentor:""
+                commentor:"",
+                canEdit: false
             }
         },
         beforeMount: function() {
@@ -123,7 +124,9 @@ export default {
               }).then((response) =>{
                     if (response.data.code == 200) {
                         this.article = response.data.info;
-
+                        if (this.article.userId === this.user.id *1) {
+                          this.canEdit = true;
+                        }
                     } else {
                         this.$Message.error(response.data.msg);
                     }
@@ -277,7 +280,11 @@ export default {
         }
     }
 </script>
-
+<style>
+  .common-content{
+    margin: 20px 150px;
+  }
+</style>
 <style scoped>
 .article{
   width: 100%;

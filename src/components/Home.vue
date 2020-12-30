@@ -2,7 +2,7 @@
   <div>
     <div class="new_articles">
       <div class="title">
-        <span><Icon type="heart" />&nbsp;最新文章</span>
+        <span><Icon type="heart" />&nbsp;日常小温暖</span>
         <span class="more">more</span>
       </div>
       <ul>
@@ -20,13 +20,13 @@
 
     <div class="movies">
      <div class="title">
-      <span><Icon type="bowtie" />&nbsp;电影推荐</span>
+      <span><Icon type="bowtie" />&nbsp;看个电影呗</span>
       <span class="more">more</span>
     </div>
      
      <ul>
         <li class="article" v-for="movie in movieList">
-          <router-link :to="{path:'/blogPage',query:{id:movie.id}}"  class="my-color" target="_blank">
+          <router-link :to="{path:'/moviePage',query:{id:movie.id}}"  class="my-color" target="_blank">
             <img :src="movie.imagePath">
             <span class="t">{{movie.movieName}}</span>
             <br><span class="movie-abs">{{movie.introduction}}</span>
@@ -81,7 +81,7 @@ export default {
                         var movies = response.data.info.records;
                         movies.forEach(function(item){
                           item.movieName = item.movieName.substr(0,22);
-                          item.imagePath = "http://127.0.0.1:8080/api/webapi/auth/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.imagePath = "/api/webapi/auth/article/downloadFile?fileUrl=" + item.imagePath;
                           item.introduction = item.introduction.substr(0,70) + "...";
                         });
                         this.movieList = movies;

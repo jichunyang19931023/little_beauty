@@ -301,7 +301,11 @@ export default {
         }
     }
 </script>
-
+<style>
+  .common-content{
+    margin: 20px 150px;
+  }
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 ul {

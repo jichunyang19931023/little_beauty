@@ -55,6 +55,9 @@
   position: relative;
   margin-left: 32px;
 }
+.common-content{
+  margin: 20px 150px;
+}
 </style>
 <template>
       <div class="login">
@@ -257,11 +260,11 @@ export default {
                 this.$refs.formLogin.validate((valid) => {
                     if (valid) {
                         this.$axios.post('/api/webapi/user/login', 
-                                {
+							{
                                   username: this.formLogin.username,
                                   password: this.formLogin.passwd
-                                }
-                        ).then((response) => {
+                            }
+						).then((response) => {
                             if (response.data.code == 200) {
                                 this.$Message.success('登录成功！');
                                 setTimeout(() => {
