@@ -116,7 +116,7 @@ export default {
                 formData.append("image",fileInput.files[0]);
                 this.$axios({
                     method: "post",
-                    url: '/api/webapi/auth/article/uploadImg',
+                    url: '/api/webapi/article/uploadImg',
                     data: formData
                 }).then((response) => {
                     if (response.data.code == 200) {

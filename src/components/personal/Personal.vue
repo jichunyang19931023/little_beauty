@@ -153,7 +153,7 @@ export default {
         },
         methods: {
             loadInfo: function() {
-                this.$axios.get('/api/user/webapi/getUserInfo', {}).then((response) =>{
+                this.$axios.get('/api/webapi/user/getUserInfo', {}).then((response) =>{
                     if (response.data.code == 200) {
                         this.user = response.data.info;
                     }
@@ -241,7 +241,7 @@ export default {
                 formData.append("isAvatar",true);
                 this.$axios({
                       method: "post",
-                      url: '/api/webapi/auth/article/uploadImg',
+                      url: '/api/webapi/article/uploadImg',
                       data: formData
                   }).then((response) => {
                       if (response.data.code == 200) {
