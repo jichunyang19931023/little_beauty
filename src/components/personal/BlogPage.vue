@@ -36,8 +36,12 @@
             <Icon class="edit-color" type="edit"></Icon>
             <span>编辑</span>
           </span>
+          <!-- <span class="floatR cursor"  @click="downloadArticle(article.id)">
+            <Icon class="edit-color" type="edit"></Icon>
+            <span>导出</span>
+          </span> -->
         </div>
-        <p class="floatL content" v-html="article.content"></p>
+        <p ref="article" class="floatL content" v-html="article.content"></p>
     </div>
     <div class="comments floatL">
       <span class="commentTitie">评论</span>
@@ -73,6 +77,7 @@
 </template>
 
 <script>
+import { saveAs } from 'file-saver';
 export default {
         name:'HelloWorld',
         data() {
@@ -92,45 +97,45 @@ export default {
         },
         methods: {
             loadInfo: function(id) {
-                this.$axios.get('/api/webapi/auth/user/getUserInfo', {}).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.user = response.data.info;
-                        this.$axios.get('/api/webapi/auth/collection/checkCollection', {
+              this.$axios.get('/api/webapi/auth/user/getUserInfo', {}).then((response) => {
+                  if (response.data.code == 200) {
+                      this.user = response.data.info;
+                      this.$axios.get('/api/webapi/auth/collection/checkCollection', {
                           params: {
-                            userId: this.user.id*1,
-                            relationId:id*1,
-                            type:0
+                              userId: this.user.id * 1,
+                              relationId: id * 1,
+                              type: 0
                           }
-                        }).then((response) =>{
-                              if (response.data.code == 200) {
-                                if (response.data.info & response.data.info*1 > 0) {
+                      }).then((response) => {
+                          if (response.data.code == 200) {
+                              if (response.data.info & response.data.info * 1 > 0) {
                                   this.hasCollected = true;
-                                }
-                              } else {
-                                  this.$Message.error(response.data.msg);
                               }
-                        });
-                    }
-                });
-            },
+                          } else {
+                              this.$Message.error(response.data.msg);
+                          }
+                      });
+                      this.$axios.get('/api/webapi/auth/article/getArticleById', {
+                          params: {
+                              id: id
+                          }
+                      }).then((response) => {
+                          if (response.data.code == 200) {
+                              this.article = response.data.info;
+                              if (this.article.userId === this.user.id * 1) {
+                                  this.canEdit = true;
+                              }
+                          } else {
+                              this.$Message.error(response.data.msg);
+                          }
+                      });
+                  }
+              });
+          },
             loadArticle: function() {
               var id = this.$route.query.id;
               this.loadInfo(id);
               this.loadComments(id);
-              this.$axios.get('/api/webapi/auth/article/getArticleById', {
-                params: {
-                  id: id
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.article = response.data.info;
-                        if (this.article.userId === this.user.id *1) {
-                          this.canEdit = true;
-                        }
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
-              });
             },
             editArticle: function(id) {
               this.$router.push('/newBlog?id='+id);
@@ -276,6 +281,43 @@ export default {
             reply : function(commentId, commentUser){
               this.parentId = commentId;
               this.commentor = commentUser;
+            },
+            downloadArticle: function(){
+              var FileSaver = require('file-saver');
+              var html = "<html>" + this.$refs.article.innerHTML + "</html>";
+              var param = new URLSearchParams();
+              param.append('html', html);
+              this.$axios({
+                method: 'post',
+                url: '/api/webapi/article/html',
+                data:param
+              }).then((response) =>{
+                  const _static = {
+                    mhtml: {
+                      top: "Mime-Version: 1.0\nContent-Base: " + location.href + "\nContent-Type: Multipart/related; boundary=\"NEXT.ITEM-BOUNDARY\";type=\"text/html\"\n\n--NEXT.ITEM-BOUNDARY\nContent-Type: text/html; charset=\"utf-8\"\nContent-Location: " + location.href + "\n\n<!DOCTYPE html>\n<html>\n_html_</html>",
+                      head: "<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n<style>\n_styles_\n</style>\n</head>\n",
+                      body: "<body>_body_</body>"
+                    }
+                  };
+                  const dealhtml = response.data.html;
+                  const img = response.data.pics;
+                  let mhtmlBottom = "\n";
+                  for (let i = 0; i < img.length; i++) {
+                    const uri = img[i].src;
+                    const index = img[i].index;
+                    mhtmlBottom += "--NEXT.ITEM-BOUNDARY\n";
+                    mhtmlBottom += "Content-Location: " + index + "\n";
+                    mhtmlBottom += "Content-Type: " + uri.substring(uri.indexOf(":") + 1, uri.indexOf(";")) + "\n";
+                    mhtmlBottom += "Content-Transfer-Encoding: " + uri.substring(uri.indexOf(";") + 1, uri.indexOf(",")) + "\n\n";
+                    mhtmlBottom += uri.substring(uri.indexOf(",") + 1) + "\n\n";
+                  }
+                  mhtmlBottom += "--NEXT.ITEM-BOUNDARY--";
+                  // 整合html代码片段
+                  const fileContent = _static.mhtml.top.replace("_html_",  _static.mhtml.body.replace("_body_", dealhtml)) + mhtmlBottom;
+                  // 导出
+                  const blob = new Blob([fileContent], {type: "application/msword;charset=utf-8"});
+                  saveAs(blob, `testImage.doc`);
+              });
             }
         }
     }

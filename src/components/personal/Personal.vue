@@ -245,7 +245,6 @@ export default {
                       data: formData
                   }).then((response) => {
                       if (response.data.code == 200) {
-                        console.log("99"+config.base_path);
                           this.formItem.image = config.base_path + "/api/webapi/auth/article/downloadFile?fileUrl=" + response.data.info.filePath;
                       }
                   });
@@ -301,11 +300,7 @@ export default {
         }
     }
 </script>
-<style>
-  .common-content{
-    margin: 20px 150px;
-  }
-</style>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 ul {

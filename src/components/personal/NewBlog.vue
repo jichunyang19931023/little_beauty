@@ -138,11 +138,7 @@ export default {
         }
     }
 </script>
-<style>
-  .common-content{
-    margin: 20px 150px;
-  }
-</style>
+
 <style scoped>
 #blog_body{
   height: 525px;
