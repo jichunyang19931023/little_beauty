@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { Article } from "../service/article.js";
 export default {
         name:'HelloWorld',
         data() {
@@ -41,19 +42,18 @@ export default {
         },
         methods: {
             loadArticles: function() {
-                this.$axios.get('/api/webapi/auth/article/list', {
-                    params: {
-                      pageNum: 1,
-                      pageSize: 10
-                  }
-                }).then((response) =>{
-                    if (response.data.code == 200) {
-                        var articles = response.data.info.records;
+                let data = {
+                  pageNum: 1,
+                  pageSize: 10
+                };
+                Article.loadArticles(data).then(res => {
+                  if (res.data.code == 200) {
+                        var articles = res.data.info.records;
                         articles.forEach(function(item){
                           item.title = item.title.substr(0,20);
                         });
                         this.articleList = articles;
-                    }
+                  }
                 });
             }
         }

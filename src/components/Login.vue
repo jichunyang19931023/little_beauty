@@ -121,6 +121,8 @@
     </div>
 </template>
 <script>
+import { Auth } from "../service/auth.js";
+import { Article } from "../service/article.js";
 export default {
         data() {
             //注册参数验证
@@ -129,16 +131,15 @@ export default {
                     return callback(new Error('用户名不能为空'));
                 }
                 // 模拟异步验证效果
-                this.$axios.get('/api/webapi/user/checkUsername', {
-                    params: {
-                        username: this.formRegister.username
-                    }
-                }).then((response) => {
-                    if (response.data.info.repeat) {
-                        return callback(new Error('用户名重复啦，换一个呗~'));
-                    } else {
-                        callback();
-                    }
+                let data = {
+                  username: this.formRegister.username
+                };
+                Auth.checkUsername(data).then(res => {
+                  if (response.data.info.repeat) {
+                      return callback(new Error('用户名重复啦，换一个~'));
+                  } else {
+                      callback();
+                  }
                 });
             };
             const validatePass = (rule, value, callback) => {
@@ -225,22 +226,18 @@ export default {
                 this.isLogin = routerParams;
                 this.handleReset('formRegister');
             },
+            // 注册
             registerSubmit(name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         var username = this.formRegister.username;
-                        /*if (!this.imageurl) {
-                          this.$Message.error("头像不能为空！");
-                          return;
-                        }*/
-                        this.$axios.get('/api/webapi/user/register', {
-                            params: {
-                                image:this.imageurl,
-                                username: this.formRegister.username,
-                                password: this.formRegister.passwd,
-                                mail: this.formRegister.mail
-                            }
-                        }).then((response) => {
+                        let data = {
+                          image:this.imageurl,
+                          username: this.formRegister.username,
+                          password: this.formRegister.passwd,
+                          mail: this.formRegister.mail
+                        }
+                        Auth.register(data).then(res => {
                             if (response.data.code == 200) {
                                 this.$Message.success('注册成功,请登录！');
                                 setTimeout(() => {
@@ -251,20 +248,20 @@ export default {
                             }else{
                                 this.$Message.error(response.data.msg);
                             }
-
                         });
                     }
                 })
             },
+            // 登录
             loginSubmit(name) {
                 this.$refs.formLogin.validate((valid) => {
                     if (valid) {
                         this.$axios.post('/api/webapi/user/login', 
-							{
+							             {
                                   username: this.formLogin.username,
                                   password: this.formLogin.passwd
                             }
-						).then((response) => {
+						            ).then((response) => {
                             if (response.data.code == 200) {
                                 this.$Message.success('登录成功！');
                                 setTimeout(() => {
@@ -275,7 +272,6 @@ export default {
                             }else{
                                 this.$Message.error(response.data.msg);
                             }
-
                         });
                     }
                 })
@@ -283,6 +279,7 @@ export default {
             handleReset(name) {
                 this.$refs[name].resetFields();
             },
+            // 上传图片
             upload(e){
               var files = e.target.files;
               if (files.length > 0) {
@@ -290,20 +287,16 @@ export default {
                 var formData = new FormData();
                 formData.append("image",files[0]);
                 formData.append("isAvatar",true);
-                this.$axios({
-                      method: "post",
-                      url: '/api/webapi/article/uploadImg',
-                      data: formData
-                  }).then((response) => {
-                      if (response.data.code == 200) {
-                          this.loadImage = false;
-                          var url = response.data.info;
-                          if (url != null && url.length > 0) {
-                             this.imageurl = url;
-                             this.noImage = false;
-                          }
-                      }
-                  });
+                Article.uploadImg(formData).then(res => {
+                  if (response.data.code == 200) {
+                        this.loadImage = false;
+                        var url = response.data.info;
+                        if (url != null && url.length > 0) {
+                            this.imageurl = url;
+                            this.noImage = false;
+                        }
+                  }
+                });
               }
             }
         },

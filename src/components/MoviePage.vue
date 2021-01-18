@@ -40,6 +40,9 @@
 </template>
 
 <script>
+import { Auth } from "../service/auth.js";
+import { Article } from "../service/article.js";
+import { Movie } from "../service/movie.js";
 export default {
         name:'HelloWorld',
         data() {
@@ -55,23 +58,22 @@ export default {
         },
         methods: {
             loadInfo: function(id) {
-                this.$axios.get('/api/webapi/auth/user/getUserInfo', {}).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.user = response.data.info;
-                        this.$axios.get('/api/webapi/auth/collection/checkCollection', {
-                          params: {
-                            userId: this.user.id*1,
-                            relationId:id*1,
-                            type:1
-                          }
-                        }).then((response) =>{
-                              if (response.data.code == 200) {
-                                if (response.data.info & response.data.info*1 > 0) {
-                                  this.hasCollected = true;
-                                }
-                              } else {
-                                  this.$Message.error(response.data.msg);
+                Auth.getUserInfo({}).then(res => {
+                  if (res.data.code == 200) {
+                        this.user = res.data.info;
+                        let data = {
+                          userId: this.user.id*1,
+                          relationId:id*1,
+                          type:1
+                        }
+                        Article.checkCollection({data}).then(response => {
+                            if (response.data.code == 200) {
+                              if (response.data.info & response.data.info*1 > 0) {
+                                this.hasCollected = true;
                               }
+                            } else {
+                                this.$Message.error(response.data.msg);
+                            }
                         });
                     }
                 });
@@ -79,17 +81,15 @@ export default {
             loadMovie: function() {
               var id = this.$route.query.id;
               this.loadInfo(id);
-              this.$axios.get('/api/webapi/auth/movie/getMovieById', {
-                params: {
-                  id: id
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.movie = response.data.info;
-
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
+              let data = {
+                id: id
+              };
+              Movie.getMovieById(data).then(response => {
+                  if (response.data.code == 200) {
+                      this.movie = response.data.info;
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
               });
             },
             collectMovie: function(id) {
@@ -101,17 +101,13 @@ export default {
               param.append('userId',this.user.id*1);
               param.append('relationId',id*1);
               param.append('type', 1);
-              this.$axios({
-                method: 'post',
-                url: '/api/webapi/auth/collection/addCollection',
-                data:param
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.hasCollected = true;
-                        this.$Message.info("收藏成功！");
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
+              Article.addCollection(param).then(response => {
+                  if (response.data.code == 200) {
+                      this.hasCollected = true;
+                      this.$Message.info("收藏成功！");
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
               });
             },
             delCollection : function(id){
@@ -119,17 +115,13 @@ export default {
               param.append('userId',this.user.id*1);
               param.append('relationId',id*1);
               param.append('type', 1);
-              this.$axios({
-                method: 'post',
-                url: '/api/webapi/auth/collection/delCollection',
-                data:param
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.hasCollected = false;
-                         this.$Message.info("取消收藏成功！");
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
+              Article.delCollection(param).then(response => {
+                  if (response.data.code == 200) {
+                      this.hasCollected = false;
+                      this.$Message.info("取消收藏成功！");
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
               });
             }
         }

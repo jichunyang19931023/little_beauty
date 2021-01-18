@@ -118,6 +118,8 @@
 </template>
 
 <script>
+import { Auth } from "../../service/auth.js";
+import { Article } from "../../service/article.js";
 import config from "../../../config/global"
 export default {
         name:'HelloWorld',
@@ -153,7 +155,7 @@ export default {
         },
         methods: {
             loadInfo: function() {
-                this.$axios.get('/api/webapi/auth/user/getUserInfo', {}).then((response) =>{
+                Auth.getUserInfo().then(response => {
                     if (response.data.code == 200) {
                         this.user = response.data.info;
                     }
@@ -164,29 +166,27 @@ export default {
               var username = new Array();
               username = cookieMsg.split("-");
               var personId = username[username.length-2];
-              this.$axios.get('/api/webapi/auth/article/list', {
-                params: {
+              let data = {
                   personId: personId
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
+              };
+              Article.loadArticles(data).then(response => {
+                  if (response.data.code == 200) {
                         var articles = response.data.info.records;
                         articles.forEach(function(item){
                           item.title = item.title.substr(0,20);
                         });
                         this.articleList = articles;
-                    } else {
+                  } else {
                         this.$Message.error(response.data.msg);
-                    }
-                });
+                  }
+              });
             },
             loadComments: function() {
-              this.$axios.get('/api/webapi/auth/comments/commentsList', {
-                params: {
-                  articleUserId: this.user.id
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
+              let data = {
+                articleUserId: this.user.id
+              }
+              Article.loadComments(data).then(response => {
+                  if (response.data.code == 200) {
                         this.commentsList = response.data.info;
                         this.commentsList.forEach(function(item){
                           item.commentMsg = "评论了我的博客：" + item.title;
@@ -194,26 +194,25 @@ export default {
                             item.commentMsg = "回复了我：";
                           }
                         });
-                    } else {
+                  } else {
                         this.$Message.error(response.data.msg);
-                    }
+                  }
               });
             },
             editArticle: function(id) {
               this.$router.push('/newBlog?id='+id);
             },
             delArticle: function(id) {
-              this.$axios.get('/api/webapi/auth/article/delArticle', {
-                params: {
-                  id: id
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.$router.push('/blogList');
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
-                });
+              let data = {
+                id: id
+              }
+              Article.delArticle(data).then(response => {
+                  if (response.data.code == 200) {
+                      this.$router.push('/blogList');
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
+              });
             },
             changeInfo:function(){
               this.loadInfo();
@@ -239,15 +238,11 @@ export default {
                 var formData = new FormData();
                 formData.append("image",files[0]);
                 formData.append("isAvatar",true);
-                this.$axios({
-                      method: "post",
-                      url: '/api/webapi/article/uploadImg',
-                      data: formData
-                  }).then((response) => {
-                      if (response.data.code == 200) {
-                          this.formItem.image = config.base_path + "/api/webapi/auth/article/downloadFile?fileUrl=" + response.data.info.filePath;
-                      }
-                  });
+                Article.uploadImg(formData).then(response => {
+                  if (response.data.code == 200) {
+                      this.formItem.image = config.base_path + "/api/webapi/article/downloadFile?fileUrl=" + response.data.info.filePath;
+                  }
+                });
               }
             },
             ok:function() {
@@ -264,18 +259,14 @@ export default {
               }
               param.append('sex',sex);
               param.append('msg',this.formItem.text);
-              this.$axios({
-                method: 'post',
-                url: '/api/webapi/auth/user/editUser',
-                data:param
-            }).then((response) =>{
-                    if (response.data.code == 200) {
+              Article.editUser(param).then(response => {
+                  if (response.data.code == 200) {
                         this.loadInfo();
                         this.$emit("userchange",this.formItem.name);
-                    } else {
+                  } else {
                         this.$Message.error(response.data.msg);
-                    }
-                });
+                  }
+              });
             },
             loadTabList:function(name){
               if (name == "collections") {
@@ -283,18 +274,17 @@ export default {
               }
             },
             getCollections:function(){
-              this.$axios.get('/api/webapi/auth/collection/collectionList', {
-                params: {
-                  userId: this.user.id,
-                  type: 0
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
+              let data = {
+                userId: this.user.id,
+                type: 0
+              }
+              Article.collectionList(data).then(res => {
+                 if (response.data.code == 200) {
                         this.collectionList = response.data.info;
-                    } else {
+                 } else {
                         this.$Message.error(response.data.msg);
-                    }
-             });
+                 }
+              });
 
             }
         }

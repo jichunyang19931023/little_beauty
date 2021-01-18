@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import { Article } from "../../service/article.js";
 export default {
         name:'HelloWorld',
         data() {
@@ -91,37 +92,35 @@ export default {
               var username = new Array();
               username = cookieMsg.split("-");
               var personId = username[username.length-2];
-              this.$axios.get('/api/webapi/auth/article/list', {
-                params: {
-                  personId : personId
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
+              let data = {
+                personId : personId
+              }
+              Article.loadArticles(data).then(res => {
+                  if (response.data.code == 200) {
                         var articles = response.data.info.records;
                         articles.forEach(function(item){
                           item.title = item.title.substr(0,20);
                         });
                         this.articleList = articles;
-                    } else {
+                  } else {
                         this.$Message.error(response.data.msg);
-                    }
-                });
+                  }
+              });
             },
             editArticle: function(id) {
               this.$router.push('/newBlog?id='+id);
             },
             delArticle: function(id) {
-              this.$axios.get('/api/webapi/auth/article/delArticle', {
-                params: {
-                  id: id
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.$router.push('/blogList');
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
-                });
+              let data = {
+                id: id
+              }
+              Article.delArticle(data).then(response => {
+                  if (response.data.code == 200) {
+                      this.$router.push('/blogList');
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
+              });
             }
         }
     }

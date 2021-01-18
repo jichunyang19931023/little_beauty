@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { Movie } from "../service/movie.js";
 export default {
         name:'HelloWorld',
         data() {
@@ -39,20 +40,20 @@ export default {
         },
         methods: {
             loadMovies: function() {
-                this.$axios.get('/api/webapi/auth/movie/list', {
-                    params: {
-                      pageNum: 1,
-                      pageSize: 10
-                  }
-                }).then((response) =>{
-                    if (response.data.code == 200) {
-                        var movies = response.data.info.records;
+                let data = {
+                  pageNum: 1,
+                  pageSize: 10
+                }
+                Movie.loadMovies({data}).then(res => {
+                  if (res.data.code == 200) {
+                        var movies = res.data.info.records;
                         movies.forEach(function(item){
-                          var url = "/api/webapi/auth/article/downloadFile?fileUrl=" + item.imagePath;
-                          item.imagePath = url;
+                          item.movieName = item.movieName.substr(0,22);
+                          item.imagePath = "/api/webapi/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.introduction = item.introduction.substr(0,150) + "...";
                         });
                         this.movieList = movies;
-                    }
+                  }
                 });
             }
         }

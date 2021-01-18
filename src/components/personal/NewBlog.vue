@@ -12,6 +12,7 @@
 <script>
 import {quillEditor} from 'vue-quill-editor'
 import config from "../../../config/global"
+import { Article } from "../../service/article.js";
 export default {
         name:'editor',
         components: {
@@ -43,19 +44,18 @@ export default {
         },
         methods: {
             loadArticle: function() {
-              this.$axios.get('/api/webapi/auth/article/getArticleById', {
-                params: {
-                  id: this.id
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
+              let data = {
+                id: this.id
+              }
+              Article.getArticleById(data).then(res => {
+                  if (response.data.code == 200) {
                         var article = response.data.info;
                         this.title = article.title;
                         this.content = article.content;
-                    } else {
+                  } else {
                         this.$Message.error(response.data.msg);
-                    }
-                });
+                  }
+              });
             },
             publish: function() {
                 if (this.title == "" || this.content == "") {
@@ -87,21 +87,16 @@ export default {
                   }).then((response) => {
                       if (response.data.code == 200) {
                           this.$router.push('/BlogPage?id='+this.id);
-                      } else {
-                          //this.$Message.error(response.data.msg);
                       }
                   });
                   return;
                 }
-                this.$axios({
-                    method: "post",
-                    url: '/api/webapi/auth/article/addArticle',
-                    params: {
-                        title: this.title,
-                        content: this.content,
-                        userId: userId
-                    }
-                }).then((response) => {
+                let data = {
+                  title: this.title,
+                  content: this.content,
+                  userId: userId
+                }
+                Article.addArticle(data).then(response => {
                     if (response.data.code == 200) {
                         this.$router.push('/blogList');
                     } else {
@@ -114,15 +109,11 @@ export default {
                 var fileInput = document.getElementById("uniqueId");
                 var formData = new FormData();
                 formData.append("image",fileInput.files[0]);
-                this.$axios({
-                    method: "post",
-                    url: '/api/webapi/article/uploadImg',
-                    data: formData
-                }).then((response) => {
+                Article.uploadImg(formData).then(response => {
                     if (response.data.code == 200) {
                         var filePath = response.data.info.filePath;
                         console.log(config);
-                        var url = this.config.base_path + "/api/webapi/auth/article/downloadFile?fileUrl=" + filePath;
+                        var url = this.config.base_path + "/api/webapi/article/downloadFile?fileUrl=" + filePath;
                         if (url != null && url.length > 0) {
                            vm.addImgRange = vm.$refs.myQuillEditor.quill.getSelection();
                            var index = vm.addImgRange != null?vm.addImgRange.index:0;

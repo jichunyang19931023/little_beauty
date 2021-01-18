@@ -78,6 +78,8 @@
 
 <script>
 import { saveAs } from 'file-saver';
+import { Article } from "../../service/article.js";
+import { Auth } from "../../service/auth.js";
 export default {
         name:'HelloWorld',
         data() {
@@ -97,16 +99,15 @@ export default {
         },
         methods: {
             loadInfo: function(id) {
-              this.$axios.get('/api/webapi/auth/user/getUserInfo', {}).then((response) => {
+              Auth.getUserInfo({}).then(response => {
                   if (response.data.code == 200) {
                       this.user = response.data.info;
-                      this.$axios.get('/api/webapi/auth/collection/checkCollection', {
-                          params: {
-                              userId: this.user.id * 1,
-                              relationId: id * 1,
-                              type: 0
-                          }
-                      }).then((response) => {
+                      let data = {
+                          userId: this.user.id*1,
+                          relationId:id*1,
+                          type:0
+                      }
+                      Article.checkCollection(data).then(response => {
                           if (response.data.code == 200) {
                               if (response.data.info & response.data.info * 1 > 0) {
                                   this.hasCollected = true;
@@ -115,11 +116,10 @@ export default {
                               this.$Message.error(response.data.msg);
                           }
                       });
-                      this.$axios.get('/api/webapi/auth/article/getArticleById', {
-                          params: {
-                              id: id
-                          }
-                      }).then((response) => {
+                      let data2 = {
+                        id: id
+                      }
+                      Article.getArticleById(data2).then(response => {
                           if (response.data.code == 200) {
                               this.article = response.data.info;
                               if (this.article.userId === this.user.id * 1) {
@@ -141,17 +141,16 @@ export default {
               this.$router.push('/newBlog?id='+id);
             },
             delArticle: function(id) {
-              this.$axios.get('/api/webapi/auth/article/delArticle', {
-                params: {
-                  id: id
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.$router.push('/blogList');
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
-                });
+              let data = {
+                id: id
+              }
+              Article.delArticle(data).then(response => {
+                  if (response.data.code == 200) {
+                      this.$router.push('/blogList');
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
+              });
             },
             collectArticle: function(id) {
               var param = new URLSearchParams();
@@ -162,18 +161,14 @@ export default {
               param.append('userId',this.user.id*1);
               param.append('relationId',id*1);
               param.append('type', 0);
-              this.$axios({
-                method: 'post',
-                url: '/api/webapi/auth/collection/addCollection',
-                data:param
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.hasCollected = true;
-                        this.$Message.info("收藏成功！");
-                        this.article.collectCount++;
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
+              Article.addCollection(param).then(response => {
+                  if (response.data.code == 200) {
+                      this.hasCollected = true;
+                      this.$Message.info("收藏成功！");
+                      this.article.collectCount++;
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
               });
             },
             delCollection : function(id){
@@ -181,29 +176,23 @@ export default {
               param.append('userId',this.user.id*1);
               param.append('relationId',id*1);
               param.append('type', 0);
-              this.$axios({
-                method: 'post',
-                url: '/api/webapi/auth/collection/delCollection',
-                data:param
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        this.hasCollected = false;
-                         this.$Message.info("取消收藏成功！");
-                         this.article.collectCount--;
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
+              Article.delCollection(param).then(response => {
+                  if (response.data.code == 200) {
+                      this.hasCollected = false;
+                      this.$Message.info("取消收藏成功！");
+                      this.article.collectCount--;
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
               });
             },
             loadComments: function(id) {
-              this.$axios.get('/api/webapi/auth/comments/list', {
-                params: {
-                  articleId: id
-                }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
+              let data = {
+                articleId: id
+              }
+              Article.loadComments(data).then(response => {
+                  if (response.data.code == 200) {
                         var comments = response.data.info;
-
                         comments.forEach(function(item){
                           if (item.parentId != 0) {
                             for(var i=0;i<comments.length;i++){
@@ -225,9 +214,9 @@ export default {
                         });
                         this.comments = [];
                         this.comments = comments;
-                    } else {
+                  } else {
                         this.$Message.error(response.data.msg);
-                    }
+                  }
               });
             },
             addComment : function(id){
@@ -240,12 +229,8 @@ export default {
               param.append('articleId',id*1);
               param.append('comments',this.commentsContent);
               param.append('parentId',this.parentId);
-              this.$axios({
-                method: 'post',
-                url: '/api/webapi/auth/comments/addComments',
-                data:param
-              }).then((response) =>{
-                    if (response.data.code == 200) {
+              Article.addComments(param).then(response => {
+                  if (response.data.code == 200) {
                         this.commentsContent = "";
                         this.parentId = 0;
                         this.commentor = "";
@@ -273,9 +258,9 @@ export default {
                         this.comments = [];
                         this.comments = comments;
                         this.article.commentCount++;
-                    } else {
+                  } else {
                         this.$Message.error(response.data.msg);
-                    }
+                  }
               });
             },
             reply : function(commentId, commentUser){

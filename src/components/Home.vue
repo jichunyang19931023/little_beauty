@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import { Article } from "../service/article.js";
+import { Movie } from "../service/movie.js";
 export default {
         name:'HelloWorld',
         data() {
@@ -61,31 +63,30 @@ export default {
         },
         methods: {
             loadArticles: function() {
-                this.$axios.get('/api/webapi/auth/article/list', {}).then((response) =>{
-                    if (response.data.code == 200) {
-                        var articles = response.data.info.records;
+                Article.loadArticles({}).then(res => {
+                  if (res.data.code == 200) {
+                        var articles = res.data.info.records;
                         articles.forEach(function(item){
                           item.title = item.title.substr(0,20);
                         });
                         this.articleList = articles;
-                    }
+                  }
                 });
             },
             loadMovies: function() {
-                this.$axios.get('/api/webapi/auth/movie/list', {
-                  params: {
-                    pageNum: 1
+                var data = {
+                  pageNum: 1
                 }
-              }).then((response) =>{
-                    if (response.data.code == 200) {
-                        var movies = response.data.info.records;
+                Movie.loadMovies({data}).then(res => {
+                  if (res.data.code == 200) {
+                        var movies = res.data.info.records;
                         movies.forEach(function(item){
                           item.movieName = item.movieName.substr(0,22);
-                          item.imagePath = "/api/webapi/auth/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.imagePath = "/api/webapi/article/downloadFile?fileUrl=" + item.imagePath;
                           item.introduction = item.introduction.substr(0,70) + "...";
                         });
                         this.movieList = movies;
-                    }
+                  }
                 });
             }
         }
