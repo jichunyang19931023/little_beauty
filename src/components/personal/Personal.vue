@@ -266,7 +266,7 @@ export default {
               }
               param.append('sex',sex);
               param.append('msg',this.formItem.text);
-              Article.editUser(param).then(response => {
+              Auth.editUser(param).then(response => {
                   if (response.data.code == 200) {
                         this.loadInfo();
                         this.$emit("userchange",this.formItem.name);

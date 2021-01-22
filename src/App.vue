@@ -106,7 +106,8 @@
     </div>
 </template>
 <script>
-  export default {
+import { Auth } from "../src/service/auth.js";
+export default {
     name: 'App',
     data(){
         return {
@@ -122,21 +123,20 @@
             this.$router.push('/login/'+login);
         },
         logout:function(){
-            this.$axios.get('/api/webapi/user/loginout', {}).then((response) => {
-
-                    if (response.data.code == 200) {
-                        this.username = "";
-                        this.$router.push('/login/1');
-                    } else {
-                        this.$Message.error(response.data.msg);
-                    }
-             });
+            Auth.logout({}).then(response => {
+                if (response.data.state == 'ok') {
+                    this.username = "";
+                    this.$router.push('/login/1');
+                } else {
+                    this.$Message.error(response.data.msg);
+                }
+            });
         },
         initUsername:function(data){
             this.username = data;
         },
         loadUser : function(){
-            this.$axios.get('/api/webapi/auth/user/getUserInfo', {}).then((response) =>{
+            Auth.getUserInfo({}).then(response => {
                 if (response.data.code == 200) {
                     this.avatar = response.data.info.image;
                     this.username = response.data.info.name;

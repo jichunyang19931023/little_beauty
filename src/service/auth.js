@@ -32,6 +32,13 @@ let Auth = {
       url: "/api/webapi/auth/user/editUser",
       data: data
     });
+  },
+  logout: function(data) {
+    return HttpRequest.getRequest({
+      method: "POST",
+      url: "/api/webapi/user/logout",
+      data: data
+    });
   }
 };
 export {Auth};
