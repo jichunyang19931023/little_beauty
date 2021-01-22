@@ -66,7 +66,7 @@ export default {
                           relationId:id*1,
                           type:1
                         }
-                        Article.checkCollection({data}).then(response => {
+                        Article.checkCollection(data).then(response => {
                             if (response.data.code == 200) {
                               if (response.data.info & response.data.info*1 > 0) {
                                 this.hasCollected = true;

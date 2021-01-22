@@ -15,6 +15,12 @@
               <span class="time">{{article.createTimeStr}}</span>
             </router-link>
           </li>
+          <div class="loading">
+            <Spin v-if="articleLoading">
+              <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+              <div>等等我·····</div>
+            </Spin>
+          </div>
       </ul>
     </div>
 
@@ -32,6 +38,12 @@
             <br><span class="movie-abs">{{movie.introduction}}</span>
           </router-link>
         </li>
+        <div class="loading">
+            <Spin v-if="articleLoading">
+              <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+              <div>等等我·····</div>
+            </Spin>
+        </div>
       </ul>
     </div>
   </div>
@@ -46,7 +58,9 @@ export default {
             return {
                 articleList: [],
                 movieList: [],
-                arr : []
+                arr : [],
+                articleLoading: true,
+                movieLoading: true
             }
         },
         beforeMount: function() {
@@ -64,6 +78,7 @@ export default {
         methods: {
             loadArticles: function() {
                 Article.loadArticles({}).then(res => {
+                  this.articleLoading = false;
                   if (res.data.code == 200) {
                         var articles = res.data.info.records;
                         articles.forEach(function(item){
@@ -78,6 +93,7 @@ export default {
                   pageNum: 1
                 }
                 Movie.loadMovies({data}).then(res => {
+                  this.movieLoading = false;
                   if (res.data.code == 200) {
                         var movies = res.data.info.records;
                         movies.forEach(function(item){
@@ -161,5 +177,29 @@ a {
     height: 70px;
     overflow: hidden;
     width: 100%;
+}
+
+.demo-spin-icon-load {
+    animation: ani-demo-spin 1s linear infinite;
+}
+
+@keyframes ani-demo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(180deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.demo-spin-col {
+    height: 100px;
+    position: relative;
+    border: 1px solid #eee;
 }
 </style>

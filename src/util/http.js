@@ -1,4 +1,6 @@
 import axios from "axios";
+import router from "../router/index.js";
+
 var HttpRequest = {
   getRequest({ url, data = {}, method = "GET" }) {
     return new Promise((resolve, reject) => {
@@ -17,11 +19,10 @@ var HttpRequest = {
     }).then(res => {
       if (res.status == 200) {
         resolve(res);
-      } else if (res.code == 403) {
-        this.$router.push('/login/1');
       }
-    }).catch(() => {
-      reject();
+    }).catch(err =>{
+        router.push("/login/1");
+        reject(err);
     })
   }
 };

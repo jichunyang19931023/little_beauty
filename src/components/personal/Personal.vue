@@ -46,8 +46,8 @@
                 <span class="msg">个人签名：{{user.msg?user.msg:'这个小朋友还没来得及写个人签名呢~'}}</span>
               </div>
               <div class="tabs">
-                <Tabs @on-click="getCollections">
-                    <TabPane label="我的博客" name="blogs">
+                <Tabs @on-click="loadTabList">
+                    <TabPane label="我的日常" name="blogs">
                       <ul class="myblog floatL">
                         <li class="blog-unit"  v-for="article in articleList">
                           <router-link :to="{path:'/blogPage',query:{id:article.id}}" target="_blank">
@@ -83,12 +83,22 @@
                         </li>
                       </ul>
                     </TabPane>
-                    <TabPane label="我的收藏" name="collections">
+                    <TabPane label="日常收藏" name="collections">
                         <ul class="myblog floatL">
-                        <li class="blog-unit2"  v-for="collection in collectionList">
+                        <li class="blog-unit2" v-for="collection in collectionList">
                           <router-link :to="{path:'/blogPage',query:{id:collection.relationId}}" target="_blank">
                             <h3 class="blog-title bottom-dis-8">{{collection.title}}</h3>
                             <p class="text bottom-dis-8">{{collection.abs}}</p>
+                          </router-link>
+                        </li>
+                      </ul>
+                    </TabPane>
+                    <TabPane label="电影收藏" name="movieCollections">
+                        <ul class="myblog floatL">
+                        <li class="blog-unit2"  v-for="movieCollection in movieCollectionList">
+                          <router-link :to="{path:'/moviePage',query:{id:movieCollection.relationId}}" target="_blank">
+                            <h3 class="blog-title bottom-dis-8">{{movieCollection.movieName}}</h3>
+                            <p class="text bottom-dis-8">{{movieCollection.introduction}}</p>
                           </router-link>
                         </li>
                       </ul>
@@ -105,9 +115,6 @@
                           <p class="commentMsg">{{comment.comments}}</p>
                         </li>
                       </ul>
-                    </TabPane>
-                    <TabPane label="我的点赞" name="likes">
-
                     </TabPane>
                 </Tabs>
               </div>
@@ -137,6 +144,7 @@ export default {
                     config:config
                 },
                 collectionList:[],
+                movieCollectionList: [],
                 commentsList:[]
             }
         },
@@ -148,7 +156,6 @@ export default {
             if (login != "") {
               this.loadInfo();
               this.loadArticles();
-              this.loadComments();
             }else{
               this.$router.push('/login/1');
             }
@@ -269,8 +276,15 @@ export default {
               });
             },
             loadTabList:function(name){
-              if (name == "collections") {
+              console.log(name);
+              if (name == "blogs") {
+                this.loadArticles();
+              }else if (name == "collections") {
                 this.getCollections();
+              }else if(name == "movieCollections"){
+                this.getMovieCollection();
+              }else if (name == "comments") {
+                this.loadComments();
               }
             },
             getCollections:function(){
@@ -278,14 +292,26 @@ export default {
                 userId: this.user.id,
                 type: 0
               }
-              Article.collectionList(data).then(res => {
+              Article.collectionList(data).then(response => {
                  if (response.data.code == 200) {
-                        this.collectionList = response.data.info;
+                    this.collectionList = response.data.info;
                  } else {
-                        this.$Message.error(response.data.msg);
+                    this.$Message.error(response.data.msg);
                  }
               });
-
+            },
+            getMovieCollection:function(){
+              let data = {
+                userId: this.user.id,
+                type: 1
+              }
+              Article.collectionList(data).then(response => {
+                 if (response.data.code == 200) {
+                    this.movieCollectionList = response.data.info;
+                 } else {
+                    this.$Message.error(response.data.msg);
+                 }
+              });
             }
         }
     }
@@ -400,10 +426,7 @@ a {
     padding-top: 16px;
 }
 .blog-unit{
-  height: 140px;
-}
-.blog-unit2{
-    height: 110px;
+  height: 125px;
 }
 .blog-unit3{
     height: 80px;

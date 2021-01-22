@@ -49,6 +49,9 @@
   .common-content{
     margin: 20px 150px;
   }
+  .loading{
+    margin-top: 20px;
+  }
 </style>
 <template>
     <div class="layout">

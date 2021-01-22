@@ -12,6 +12,12 @@
               <br><span class="movie-abs">{{movie.introduction}}</span>
             </router-link>
           </li>
+          <div class="loading">
+            <Spin v-if="movieLoading">
+              <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+              <div>等等我·····</div>
+            </Spin>
+          </div>
       </ul>
     </div>
   </div>
@@ -24,7 +30,8 @@ export default {
         data() {
             return {
                 movieList: [],
-                arr : []
+                arr : [],
+                movieLoading: true
             }
         },
         beforeMount: function() {
@@ -45,6 +52,7 @@ export default {
                   pageSize: 10
                 }
                 Movie.loadMovies({data}).then(res => {
+                  this.movieLoading = false;
                   if (res.data.code == 200) {
                         var movies = res.data.info.records;
                         movies.forEach(function(item){

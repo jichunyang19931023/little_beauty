@@ -47,7 +47,7 @@ export default {
               let data = {
                 id: this.id
               }
-              Article.getArticleById(data).then(res => {
+              Article.getArticleById(data).then(response => {
                   if (response.data.code == 200) {
                         var article = response.data.info;
                         this.title = article.title;

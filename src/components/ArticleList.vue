@@ -14,6 +14,12 @@
               <span class="time">{{article.createTimeStr}}</span>
             </router-link>
           </li>
+          <div class="loading">
+            <Spin v-if="articleLoading">
+              <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+              <div>等等我·····</div>
+            </Spin>
+          </div>
       </ul>
     </div>
   </div>
@@ -26,7 +32,8 @@ export default {
         data() {
             return {
                 articleList: [],
-                arr : []
+                arr : [],
+                articleLoading: true
             }
         },
         beforeMount: function() {
@@ -47,6 +54,7 @@ export default {
                   pageSize: 10
                 };
                 Article.loadArticles(data).then(res => {
+                  this.articleLoading = false;
                   if (res.data.code == 200) {
                         var articles = res.data.info.records;
                         articles.forEach(function(item){
