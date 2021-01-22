@@ -257,7 +257,7 @@ export default {
               param.append('id',this.user.id);
               param.append('image',this.formItem.image);
               param.append('name',this.formItem.name);
-              param.append('mail',this.formItem.mail);
+              param.append('mail',this.formItem.mail? this.formItem.mail:"");
               var sex = 2;
               if(this.formItem.sex=='girl'){
                 sex = 0;
@@ -265,7 +265,7 @@ export default {
                 sex = 1;
               }
               param.append('sex',sex);
-              param.append('msg',this.formItem.text);
+              param.append('msg',this.formItem.text?this.formItem.text:"");
               Auth.editUser(param).then(response => {
                   if (response.data.code == 200) {
                         this.loadInfo();
