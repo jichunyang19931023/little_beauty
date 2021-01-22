@@ -134,7 +134,7 @@ export default {
                 let data = {
                   username: this.formRegister.username
                 };
-                Auth.checkUsername(data).then(res => {
+                Auth.checkUsername(data).then(response => {
                   if (response.data.info.repeat) {
                       return callback(new Error('用户名重复啦，换一个~'));
                   } else {
@@ -237,7 +237,7 @@ export default {
                           password: this.formRegister.passwd,
                           mail: this.formRegister.mail
                         }
-                        Auth.register(data).then(res => {
+                        Auth.register(data).then(response => {
                             if (response.data.code == 200) {
                                 this.$Message.success('注册成功,请登录！');
                                 setTimeout(() => {
@@ -287,7 +287,7 @@ export default {
                 var formData = new FormData();
                 formData.append("image",files[0]);
                 formData.append("isAvatar",true);
-                Article.uploadImg(formData).then(res => {
+                Article.uploadImg(formData).then(response => {
                   if (response.data.code == 200) {
                         this.loadImage = false;
                         var url = response.data.info;
