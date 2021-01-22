@@ -52,7 +52,6 @@ export default {
                   pageSize: 10
                 }
                 Movie.loadMovies({data}).then(res => {
-                  this.movieLoading = false;
                   if (res.data.code == 200) {
                         var movies = res.data.info.records;
                         movies.forEach(function(item){
@@ -62,6 +61,7 @@ export default {
                         });
                         this.movieList = movies;
                   }
+                  this.movieLoading = false;
                 });
             }
         }

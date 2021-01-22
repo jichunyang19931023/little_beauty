@@ -54,6 +54,12 @@
             <span class="time">{{article.createTimeStr}}</span>
           </router-link>
         </li>
+        <div class="loading">
+            <Spin v-if="articleLoading">
+              <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+              <div>等等我·····</div>
+            </Spin>
+        </div>
       </ul>
     </div>
     <div class="new_articles floatL">
@@ -80,7 +86,8 @@ export default {
         name:'HelloWorld',
         data() {
             return {
-                articleList: []
+                articleList: [],
+                articleLoading: true
             }
         },
         beforeMount: function() {
@@ -95,7 +102,8 @@ export default {
               let data = {
                 personId : personId
               }
-              Article.loadArticles(data).then(res => {
+              Article.loadArticles(data).then(response => {
+                  this.articleLoading = false;
                   if (response.data.code == 200) {
                         var articles = response.data.info.records;
                         articles.forEach(function(item){
@@ -151,8 +159,8 @@ export default {
 .new-blog{
     float: right;
     margin-right: 30px;
-    font-size: 16px;
-    font-weight: 200;
+    font-size: 15px;
+    font-weight: 600;
     background: #f1b5d3;
     border: 1px solid #fff;
     border-radius: 4px;
