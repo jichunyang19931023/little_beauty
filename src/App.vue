@@ -125,6 +125,7 @@ export default {
         logout:function(){
             Auth.logout({}).then(response => {
                 if (response.data.state == 'ok') {
+                    this.delCookie();
                     this.username = "";
                     this.$router.push('/login/1');
                 } else {
@@ -142,6 +143,19 @@ export default {
                     this.username = response.data.info.name;
                 }
             });
+        },
+        delCookie:function() {
+          var keys = document.cookie.match(/[^ =;]+(?==)/g)
+          if (keys) {
+            for (var i = keys.length; i--;) {
+              // 清除当前域名下的,例如：m.ratingdog.cn
+              document.cookie = keys[i] + '=0;path=/;expires=' + new Date(0).toUTCString(); 
+              // 清除当前域名下的，例如 .m.ratingdog.cn
+              document.cookie = keys[i] + '=0;path=/;domain=' + document.domain + ';expires=' + new Date(0).toUTCString();
+              // 清除一级域名下的或指定的，例如 .ratingdog.cn
+              document.cookie = keys[i] + '=0;path=/;domain=ratingdog.cn;expires=' + new Date(0).toUTCString();
+            }
+          }
         }
      }
   }
