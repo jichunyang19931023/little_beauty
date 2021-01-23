@@ -58,6 +58,13 @@
 .common-content{
   margin: 20px 150px;
 }
+.image-upload{
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  left: 0;
+  top:0;
+}
 </style>
 <template>
       <div class="login">
@@ -83,7 +90,7 @@
                           </Spin>
                       </Col>
                   </Row>
-                    <img :src="imageurl">
+                    <img :src="imageurl" class="image-upload" v-show="!noImage">
                   </div>
               </FormItem>
               <FormItem label="用户名" prop="username">
@@ -99,8 +106,8 @@
                   <Input type="text" v-model="formRegister.mail"></Input>
               </FormItem>
               <FormItem class="but">
-                  <Button @click="registerSubmit('formRegister')">提交</Button>
-                  <Button @click="handleReset('formRegister')" style="margin-left: 8px">重置</Button>
+                  <Button @click="registerSubmit('formRegister')" :loading="registerLoading">提交</Button>
+                  <Button @click="handleReset('formRegister')" style="margin-left: 8px" :disabled="registerLoading">重置</Button>
               </FormItem>
           </Form>
 
@@ -113,8 +120,8 @@
                   <Input type="password" v-model="formLogin.passwd"></Input>
               </FormItem>
               <FormItem class="but">
-                  <Button @click="loginSubmit('formLogin')">提交</Button>
-                  <Button @click="handleReset('formLogin')" style="margin-left: 8px">重置</Button>
+                  <Button @click="loginSubmit('formLogin')":loading="loginLoading">提交</Button>
+                  <Button @click="handleReset('formLogin')" style="margin-left: 8px" :disabled="loginLoading">重置</Button>
               </FormItem>
           </Form>
       </div>
@@ -215,7 +222,9 @@ export default {
                 isLogin: 0,
                 imageurl:"",
                 loadImage:false,
-                noImage:true
+                noImage:true,
+                registerLoading: false,
+                loginLoading: false
             }
         },
         methods: {
@@ -225,19 +234,25 @@ export default {
                 // 将数据放在当前组件的数据内
                 this.isLogin = routerParams;
                 this.handleReset('formRegister');
+                if (this.isLogin == 0) {
+                  this.imageurl = "";
+                  this.formRegister.username = "";
+                  this.formRegister.passwd = "";
+                  this.formRegister.passwdCheck = "";
+                };
             },
             // 注册
             registerSubmit(name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         var username = this.formRegister.username;
-                        let data = {
-                          image:this.imageurl,
-                          username: this.formRegister.username,
-                          password: this.formRegister.passwd,
-                          mail: this.formRegister.mail
-                        }
-                        Auth.register(data).then(response => {
+                        var param = new URLSearchParams();
+                        param.append('image',this.imageurl?this.imageurl.replaceAll("/api/webapi/article/downloadFile?fileUrl=", ""):"");
+                        param.append('username',this.formRegister.username);
+                        param.append('password',this.formRegister.passwd);
+                        param.append('mail',this.formRegister.mail? this.formRegister.mail:"");
+                        this.registerLoading = true;
+                        Auth.register(param).then(response => {
                             if (response.data.code == 200) {
                                 this.$Message.success('注册成功,请登录！');
                                 setTimeout(() => {
@@ -248,6 +263,7 @@ export default {
                             }else{
                                 this.$Message.error(response.data.msg);
                             }
+                            this.registerLoading = false;
                         });
                     }
                 })
@@ -256,6 +272,7 @@ export default {
             loginSubmit(name) {
                 this.$refs.formLogin.validate((valid) => {
                     if (valid) {
+                        this.loginLoading = true;
                         this.$axios.post('/api/webapi/user/login', 
 							             {
                                   username: this.formLogin.username,
@@ -266,12 +283,13 @@ export default {
                                 this.$Message.success('登录成功！');
                                 setTimeout(() => {
                                     this.$router.push('/');
-                                    this.$emit("userchange",response.data.info.name);
+                                    this.$emit("userchange",response.data.info);
                                 },
                                 1000);
                             }else{
                                 this.$Message.error(response.data.msg);
                             }
+                            this.loginLoading = false;
                         });
                     }
                 })
@@ -290,9 +308,9 @@ export default {
                 Article.uploadImg(formData).then(response => {
                   if (response.data.code == 200) {
                         this.loadImage = false;
-                        var url = response.data.info;
+                        var url = response.data.info.filePath;
                         if (url != null && url.length > 0) {
-                            this.imageurl = url;
+                            this.imageurl = "/api/webapi/article/downloadFile?fileUrl=" + url;
                             this.noImage = false;
                         }
                   }

@@ -12,7 +12,7 @@ let Auth = {
   // 用户注册
   register: function(data) {
     return HttpRequest.getRequest({
-      method: "GET",
+      method: "POST",
       url: "/api/webapi/user/register",
       data: data
     });

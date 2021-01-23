@@ -19,6 +19,7 @@
             </Spin>
           </div>
       </ul>
+      <Page :total="total" :current.sync="currentPage" :page-size="pageSize" @on-change="changePage"></Page>
     </div>
   </div>
 </template>
@@ -31,7 +32,10 @@ export default {
             return {
                 movieList: [],
                 arr : [],
-                movieLoading: true
+                movieLoading: true,
+                total:0,
+                currentPage:1,
+                pageSize:10
             }
         },
         beforeMount: function() {
@@ -48,21 +52,32 @@ export default {
         methods: {
             loadMovies: function() {
                 let data = {
-                  pageNum: 1,
-                  pageSize: 10
+                  pageNum: this.currentPage,
+                  pageSize: this.pageSize
                 }
-                Movie.loadMovies({data}).then(res => {
+                Movie.loadMovies(data).then(res => {
                   if (res.data.code == 200) {
                         var movies = res.data.info.records;
                         movies.forEach(function(item){
                           item.movieName = item.movieName.substr(0,22);
                           item.imagePath = "/api/webapi/article/downloadFile?fileUrl=" + item.imagePath;
-                          item.introduction = item.introduction.substr(0,150) + "...";
+                          item.introduction = item.introduction?item.introduction.substr(0,150) + "..." : "";
                         });
-                        this.movieList = movies;
+                        this.total = res.data.info.total;
+                        if (this.total < this.pageSize) {
+                          this.movieList = movies;
+                        } else {
+                          this.movieList = movies.slice(0, this.pageSize);
+                        }
                   }
                   this.movieLoading = false;
                 });
+            },
+            changePage(index) {
+              this.currentPage = index;
+              this.movieLoading = true;
+              this.movieList = [];
+              this.loadMovies();
             }
         }
     }

@@ -15,7 +15,7 @@
                   <input type="file" v-on:change="upload" class="upload-image" />
                 </FormItem>
                 <FormItem label="用户名">
-                    <Input v-model="formItem.name" placeholder="Enter something..."></Input>
+                    <Input v-model="formItem.name" readonly></Input>
                 </FormItem>
                 <FormItem label="邮箱">
                     <Input v-model="formItem.mail" placeholder="Enter something..."></Input>
@@ -162,7 +162,7 @@ export default {
         },
         methods: {
             loadInfo: function() {
-                Auth.getUserInfo().then(response => {
+                Auth.getUserInfo({}).then(response => {
                     if (response.data.code == 200) {
                         this.user = response.data.info;
                     }
@@ -269,7 +269,7 @@ export default {
               Auth.editUser(param).then(response => {
                   if (response.data.code == 200) {
                         this.loadInfo();
-                        this.$emit("userchange",this.formItem.name);
+                        this.$emit("userchange",this.formItem);
                   } else {
                         this.$Message.error(response.data.msg);
                   }
