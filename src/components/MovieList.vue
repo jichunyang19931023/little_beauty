@@ -2,7 +2,7 @@
   <div>
     <div class="new_movies">
       <div class="title">
-        <span><Icon type="bowtie" />&nbsp;看个电影</span>
+        <span><Icon type="bowtie" />&nbsp;看个电影呗</span>
       </div>
       <ul>
           <li class="movie" v-for="movie in movieList">
@@ -19,7 +19,7 @@
             </Spin>
           </div>
       </ul>
-      <Page :total="total" :current.sync="currentPage" :page-size="pageSize" @on-change="changePage"></Page>
+      <Page :total="total" :current="currentPage" :page-size="pageSize" @on-change="changePage"></Page>
     </div>
   </div>
 </template>
@@ -64,11 +64,7 @@ export default {
                           item.introduction = item.introduction?item.introduction.substr(0,150) + "..." : "";
                         });
                         this.total = res.data.info.total;
-                        if (this.total < this.pageSize) {
-                          this.movieList = movies;
-                        } else {
-                          this.movieList = movies.slice(0, this.pageSize);
-                        }
+                        this.movieList = movies;
                   }
                   this.movieLoading = false;
                 });

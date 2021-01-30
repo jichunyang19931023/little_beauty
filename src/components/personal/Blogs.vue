@@ -64,14 +64,13 @@
     </div>
     <div class="new_articles floatL">
       <div class="title">
-        <span><Icon type="heart" />&nbsp;联系我们</span>
+        <span><Icon type="heart" />&nbsp;来听故事</span>
       </div>
       <ul>
         <li class="article floatL">
           <img class="wechat floatL" src="../../assets/images/wechat.jpg">
           <div class="connection floatL">
-            <span class="t">可扫描二维码联系开发人员</span></br>
-            <span class="qq">QQ：878147364</span></br>
+            <span class="t">讲个小故事，你要听吗？</span></br>
             <span class="qq">邮箱：878147364@qq.com</span>
           </div>
         </li>

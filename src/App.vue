@@ -57,23 +57,23 @@
     <div class="layout">
         <Layout>
             <Header>
-                <Menu mode="horizontal" theme="light" active-name="1">
+                <Menu mode="horizontal" theme="light" :active-name="$route.name">
                     <div class="layout-logo"><img src="./assets/images/logo.png"></div>
                     <div class="layout-nav">
-                        <MenuItem name="1">
+                        <MenuItem name="Home">
                             <router-link to="/">首页</router-link>
                         </MenuItem>
-                        <MenuItem name="2">
+                        <MenuItem name="ArticleList">
                             <router-link to="/articleList">日常小温暖</router-link>
                         </MenuItem>
-                        <MenuItem name="3">
+                        <MenuItem name="MovieList">
                             <router-link to="/movieList">看个电影呗</router-link>
                         </MenuItem>
-                        <MenuItem name="4">
+                        <MenuItem name="Personal">
                             <router-link to="/personal">我的小角落</router-link>
                         </MenuItem>
-                        <MenuItem name="5">
-                            <router-link to="/personal">发泄小黑屋</router-link>
+                        <MenuItem name="Heart">
+                            <router-link to="/heart">心灵小驿站</router-link>
                         </MenuItem>
                     </div>
                 </Menu>
@@ -84,7 +84,7 @@
                         <DropdownMenu slot="list">
                             <DropdownItem><router-link to="/personal">个人中心</router-link></DropdownItem>
                             <DropdownItem><router-link to="/blogList">我的博客</router-link></DropdownItem>
-                            <DropdownItem>联系我们</DropdownItem>
+                            <DropdownItem><router-link to="/chatWithMe">联系我呀</router-link></DropdownItem>
                             <DropdownItem>
                                 <span @click="logout()">退出</span>
                             </DropdownItem>

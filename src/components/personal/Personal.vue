@@ -316,7 +316,11 @@ export default {
         }
     }
 </script>
-
+<style>
+  .common-content{
+    margin: 20px 150px;
+  }
+</style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 ul {
@@ -330,7 +334,7 @@ a {
   color: #42b983 !important;
 }
 .new_articles{
-    width: 85%;
+    width: 95%;
     margin: 0 auto;
 }
 
@@ -365,8 +369,8 @@ a {
 }
 .image{
   float: left;
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   border-radius: 10px;
   margin: 2px 7px 2px 0;
 }
