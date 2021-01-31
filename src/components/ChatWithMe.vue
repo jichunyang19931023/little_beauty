@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div class="new_movies">
-      <div class="title">
+    <div class="new_movies" v-if="user.roleType == 1">
+        <div class="title">
         <span><Icon type="bowtie" />&nbsp;联系我呀</span>
-        <div class="send_btn">
+        <div @click="sendLetter()" class="send_btn">
             <Icon color="#ec5d80" size="30" type="paper-airplane" class="write_icon"></Icon><span class="send">我写好了</span>
         </div>
       </div>
       <div class="chat_content">
-        <Input v-model="textarea" type="textarea" :autosize="{minRows: 10}" placeholder="亲爱的陌生人，给我写信吧，我会回复你的。"></Input>
+        <Input v-model="textarea" type="textarea" :autosize="{minRows:10}" placeholder="亲爱的陌生人，给我写信吧，我会回复你的。"></Input>
       </div>
       <div class="article">
           <img class="wechat floatL" src="../assets/images/wechat.jpg">
@@ -19,39 +19,169 @@
           <div>
             <div class="mail_box">我的小信箱</div>
             <ul>
-              <li>
-                <Icon type="email" color="#f9aebc" size="25" class="email_icon"></Icon>
-                <span class="email_time">2021-01-29 14:34</span>
-                <Icon type="email" color="#76c1f7" size="25" class="email_icon float_margin"></Icon>
-                <span class="email_time">2021-01-29 14:34</span>
+              <li @click="getLetterById(letter.id)" v-for="letter in letterList" class="letter_item">
+                <div>
+                  <Icon type="email" color="#f9aebc" size="25" class="email_icon"></Icon>
+                  <span class="email_time">{{letter.createTime}}</span>
+                </div>
+                <div v-if="letter.replyStatus == 1">
+                  <Icon type="email" color="#76c1f7" size="25" class="email_icon float_margin"></Icon>
+                  <span class="email_time">{{letter.replyTime}}</span>
+                </div>
               </li>
-              <li>
-                <Icon type="email" color="#f9aebc" size="25" class="email_icon"></Icon>
-                <span class="email_time">2021-01-29 14:34</span>
-                <Icon type="email" color="#76c1f7" size="25" class="email_icon float_margin"></Icon>
-                <span class="email_time">2021-01-29 14:34</span>
-              </li>
+              <div style="color: gray;" v-if="letterList.length==0">暂无信件</div>
             </ul>
           </div>
+        </div>
+    </div>
+    <div class="new_movies" v-if="user.roleType == 0">
+      <div class="title">
+        <span><Icon type="bowtie" />&nbsp;我的小信箱</span>
+        <Radio-group v-model="showStatus" @on-change="clickStatus()" class="choose_status">
+          <Radio label="">全部</Radio>
+          <Radio label="0">未回复</Radio>
+          <Radio label="1">已回复</Radio>
+        </Radio-group>
+        <div>
+            <div class="mail_box"></div>
+            <ul>
+              <li @click="getLetterById(letter.id)" v-for="letter in letterList" class="letter_item">
+                <span class="email_writer">{{letter.writer}}&nbsp;的来信</span>
+                <div style="float: left;">
+                  <Icon type="email" color="#f9aebc" size="25" class="email_icon"></Icon>
+                  <span class="email_time">{{letter.createTime}}</span>
+                </div>
+                <div v-if="letter.replyStatus == 1">
+                  <Icon type="email" color="#76c1f7" size="25" class="email_icon float_margin"></Icon>
+                  <span class="email_time">{{letter.replyTime}}</span>
+                </div>
+              </li>
+              <div style="color: gray;" v-if="letterList.length==0">暂无信件</div>
+            </ul>
+        </div>
       </div>
     </div>
+    <Modal title="信件内容" v-model="modal" :mask-closable="false" @on-ok="makeSure()">
+      <Input v-model="letterContent" type="textarea" :autosize="{minRows: 10}" readonly></Input>
+      <span class="letter_title">
+        回复：
+      </span>
+      <Input v-model="replyContent" type="textarea" :autosize="{minRows: 10}" :readonly="replyReadOnly? 'readonly':false"></Input>
+    </Modal>
   </div>
 </template>
 
 <script>
-import { Heart } from "../service/heart.js";
+import { Chat } from "../service/chat.js";
+import { Auth } from "../service/auth.js";
 export default {
         name:'HelloWorld',
         data() {
             return {
-                textarea:""
+                textarea:"",
+                replyContent:"",
+                letterContent:"",
+                user:"",
+                letterList:[],
+                modal: false,
+                replyReadOnly: true,
+                showStatus: ""
             }
         },
         beforeMount: function() {
-            
+            Auth.getUserInfo({}).then(res => {
+                if (res.data.code == 200) {
+                    this.user = res.data.info;
+                    this.getLetters();
+                }
+            });
         },
         methods: {
-            
+            getLetters: function(){
+              let data = {};
+              if (this.user.roleType == 1) {
+                data.writeId = this.user.id;
+              }
+              Chat.getLetters(data).then(response => {
+                  if (response.data.code == 200) {
+                      this.letterList = response.data.info;
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
+              });
+            },
+            sendLetter: function(){
+              var param = new URLSearchParams();
+              // 如果是管理员权限
+              if (this.user.roleType == 0) {
+                if (!this.replyContent) {
+                  this.$Message.error("回复内容不能是空的哟~");
+                  return;
+                }
+                param.append('letterId',this.letterId);
+                param.append('replyContent',this.replyContent);
+                param.append('type', 1);
+              }else{
+                if (!this.textarea) {
+                  this.$Message.error("内容不能是空的哟~");
+                  return;
+                }
+                param.append('writeId',this.user.id);
+                param.append('letterContent',this.textarea);
+                param.append('type', 0);
+              }
+              Chat.sendLetter(param).then(response => {
+                  if (response.data.code == 200) {
+                      this.textarea = "";
+                      this.getLetters();
+                      this.$Message.success("信件成功发送！");
+                  }else{
+                    this.$Message.error(response.data.msg);
+                  }
+              });
+            },
+            getLetterById: function(id){
+              let data = {
+                id: id
+              };
+              Chat.getLetterById(data).then(response => {
+                  if (response.data.code == 200) {
+                      this.modal = true;
+                      this.letterId = response.data.info.id;
+                      this.letterContent = response.data.info.letterContent;
+                      this.hasReply = response.data.info.replyStatus == 1;
+                      if (!response.data.info.replyContent && this.user.roleType == 1) {
+                        this.replyContent = "暂无回复，请耐心等候哟";
+                      }else{
+                        this.replyContent = response.data.info.replyContent;
+                      }
+                      this.replyReadOnly = this.user.roleType == 1 || response.data.info.replyContent;
+                  }
+              });
+            },
+            makeSure: function(){
+              // 只有管理员才能回复
+              if (this.user.roleType == 1) {
+                return;
+              }
+              if (this.hasReply) {
+                return;
+              }
+              this.sendLetter();
+            },
+            clickStatus: function(){
+              let data = {};
+              if (this.user.roleType == 0) {
+                data.letterStatus = this.showStatus;
+              }
+              Chat.getLetters(data).then(response => {
+                  if (response.data.code == 200) {
+                      this.letterList = response.data.info;
+                  } else {
+                      this.$Message.error(response.data.msg);
+                  }
+              });
+            }
         }
     }
 </script>
@@ -145,5 +275,25 @@ a {
 ul,li{
   float: left;
   width: 100%;
+}
+.letter_item{
+  cursor: pointer;
+}
+.letter_item:hover{
+  background-color: #fbf8f8;
+}
+.letter_title{
+  float: left;
+  margin: 10px 0;
+}
+.email_writer{
+  color: #2d8cf0;
+  float: left;
+  margin-right: 10px;
+}
+.choose_status{
+  float: right;
+  color: gray;
+  font-size: 15px;
 }
 </style>

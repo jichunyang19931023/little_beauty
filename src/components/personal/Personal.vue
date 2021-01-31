@@ -81,6 +81,7 @@
                             </li>
                           </ul>
                         </li>
+                        <div v-if="articleList.length == 0" class="no_data">暂无数据</div>
                       </ul>
                     </TabPane>
                     <TabPane label="日常收藏" name="collections">
@@ -91,6 +92,7 @@
                             <p class="text bottom-dis-8">{{collection.abs}}</p>
                           </router-link>
                         </li>
+                        <div v-if="collectionList.length == 0" class="no_data">暂无数据</div>
                       </ul>
                     </TabPane>
                     <TabPane label="电影收藏" name="movieCollections">
@@ -101,6 +103,7 @@
                             <p class="text bottom-dis-8">{{movieCollection.introduction}}</p>
                           </router-link>
                         </li>
+                        <div v-if="movieCollectionList.length == 0" class="no_data">暂无数据</div>
                       </ul>
                     </TabPane>
                     <TabPane label="我的评论" name="comments">
@@ -114,6 +117,7 @@
 
                           <p class="commentMsg">{{comment.comments}}</p>
                         </li>
+                        <div v-if="commentsList.length == 0" class="no_data">暂无数据</div>
                       </ul>
                     </TabPane>
                 </Tabs>
@@ -192,7 +196,7 @@ export default {
               let data = {
                 articleUserId: this.user.id
               }
-              Article.loadComments(data).then(response => {
+              Article.loadMyComments(data).then(response => {
                   if (response.data.code == 200) {
                         this.commentsList = response.data.info;
                         this.commentsList.forEach(function(item){
@@ -492,5 +496,9 @@ a {
 .msg-info{
     float: left;
     margin-top: 10px;
+}
+.no_data{
+    margin-top: 30px;
+    text-align: center;
 }
 </style>

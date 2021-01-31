@@ -25,6 +25,14 @@ let Article = {
       data: data
     });
   },
+  // 查询我的评论列表
+  loadMyComments: function(data) {
+    return HttpRequest.getRequest({
+      method: "GET",
+      url: "/api/webapi/auth/comments/commentsList",
+      data: data
+    });
+  },
   // 添加评论
   addComments: function(data) {
     return HttpRequest.getRequest({
