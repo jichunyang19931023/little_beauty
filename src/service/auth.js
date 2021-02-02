@@ -33,6 +33,14 @@ let Auth = {
       data: data
     });
   },
+  // 编辑用户密码
+  editUserPwd: function(data) {
+    return HttpRequest.getRequest({
+      method: "POST",
+      url: "/api/webapi/auth/user/editUserPwd",
+      data: data
+    });
+  },
   logout: function(data) {
     return HttpRequest.getRequest({
       method: "POST",

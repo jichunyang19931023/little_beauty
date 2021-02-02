@@ -7,7 +7,7 @@
       <ul>
           <li class="movie" v-for="movie in movieList">
             <router-link :to="{path:'/moviePage',query:{id:movie.id}}" class="my-color">
-              <img :src="movie.imagePath">
+              <img :src="movie.imagePathThumb">
               <span class="t">{{movie.movieName}}</span>
               <br><span class="movie-abs">{{movie.introduction}}</span>
             </router-link>
@@ -60,7 +60,7 @@ export default {
                         var movies = res.data.info.records;
                         movies.forEach(function(item){
                           item.movieName = item.movieName.substr(0,22);
-                          item.imagePath = "/api/webapi/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.imagePathThumb = "/api/webapi/article/downloadFile?fileUrl=" + item.imagePathThumb;
                           item.introduction = item.introduction?item.introduction.substr(0,150) + "..." : "";
                         });
                         this.total = res.data.info.total;

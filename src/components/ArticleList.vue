@@ -9,9 +9,11 @@
             <router-link :to="{path:'/blogPage',query:{id:article.id}}" class="my-color">
               <img :src="article.imageThumb">
               <span class="t">{{article.title}}</span>
-              <br><span class="abs">{{article.abs}}</span>
-              <br><span class="writer">{{article.username}}</span>
-              <span class="time">{{article.createTimeStr}}</span>
+              <span class="abs">{{article.abs}}</span>
+              <div class="bottom_line">
+                <span class="time">{{article.createTimeStr}}</span>
+                <span class="writer">{{article.username}}</span>
+              </div>
             </router-link>
           </li>
           <div class="loading">
@@ -85,6 +87,10 @@ li {
 a {
   color: #42b983 !important;
 }
+.bottom_line{
+  float: left;
+  width: 80%;
+}
 .new_articles,.movies{
     width: 100%;
     float: left;
@@ -100,8 +106,8 @@ a {
   padding: 10px 5px;
   width: 100%;
 }
-.article .time,.title .more{
-  float: right;
+.article .time{
+  float: left;
   color: #aaa !important;
 }
 .article .t{
@@ -109,6 +115,7 @@ a {
   font-size: 16px;
   color: #48484c;
   font-weight: 700;
+  width: 100%;
 }
 .article .abs{
   margin: 8px 0;
@@ -120,6 +127,8 @@ a {
 
 .article .writer{
   color: #ec5d80;
+  float: left;
+  margin-left: 10px;
 }
 .article img{
   float: left;

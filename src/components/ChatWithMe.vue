@@ -89,7 +89,13 @@ export default {
             }
         },
         beforeMount: function() {
-            Auth.getUserInfo({}).then(res => {
+            var username = new Array();
+            username = this.getCookie("userInfo").split("-");
+            let personId = username[username.length-2];
+            let data = {
+              userId: personId
+            }
+            Auth.getUserInfo(data).then(res => {
                 if (res.data.code == 200) {
                     this.user = res.data.info;
                     this.getLetters();

@@ -2,7 +2,8 @@
   <div>
     <div class="new_articles">
       <div class="title">
-        <span><Icon type="heart" />&nbsp;个人中心</span>
+        <span><Icon type="heart" />&nbsp;我的小角落</span>
+        <span class="floatR personInfo" @click="changePwd()">修改密码</span>
         <span class="floatR personInfo" @click="changeInfo()">修改资料</span>
         <Modal
               v-model="modal"
@@ -18,7 +19,7 @@
                     <Input v-model="formItem.name" readonly></Input>
                 </FormItem>
                 <FormItem label="邮箱">
-                    <Input v-model="formItem.mail" placeholder="Enter something..."></Input>
+                    <Input v-model="formItem.mail" placeholder="输入邮箱嘛，说不定会收到来信呢..."></Input>
                 </FormItem>
                 <FormItem label="性别">
                     <RadioGroup v-model="formItem.sex">
@@ -27,10 +28,27 @@
                         <Radio class="sex" label="secret">保密</Radio>
                     </RadioGroup>
                 </FormItem>
-                <FormItem label="个人签名">
-                    <Input v-model="formItem.text" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="输入个人签名..."></Input>
+                <FormItem label="签名">
+                    <Input v-model="formItem.text" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="简单的介绍下自己呀..."></Input>
                 </FormItem>
             </Form>
+        </Modal>
+        <Modal v-model="pwdModal" title="修改密码">
+            <Form :model="pwdItem" :label-width="80">
+                <FormItem label="原始密码">
+                    <Input type="password" v-model="pwdItem.oldPwd"></Input>
+                </FormItem>
+                <FormItem label="新密码">
+                    <Input type="password" v-model="pwdItem.newPwd"></Input>
+                </FormItem>
+                <FormItem label="重复密码">
+                    <Input type="password" v-model="pwdItem.newPwdAgain"></Input>
+                </FormItem>
+            </Form>
+            <div slot="footer">
+                <Button type="text" size="large" @click="pwdModal=false">取消</Button>
+                <Button type="primary" size="large" @click="pwdOk()">确定</Button>
+            </div>
         </Modal>
       </div>
       <ul>
@@ -38,16 +56,16 @@
               <img :src="user.image" class="image">
               <div class="info">
                 <span class="name">{{user.name}}</span>
-                <br/><span class="mail">邮箱：{{user.mail}}</span>
+                <br/><span class="mail">邮箱：{{user.mail?user.mail:"暂无"}}</span>
                 <span class="create_time">注册时间：{{user.createTime}}</span>
                 <span class="create_time">性别：{{user.sexStr}}</span>
               </div>
               <div class="msg-info">
-                <span class="msg">个人签名：{{user.msg?user.msg:'这个小朋友还没来得及写个人签名呢~'}}</span>
+                <span class="msg">签名：{{user.msg?user.msg:"这个小朋友还没来得及写签名呢~"}}</span>
               </div>
               <div class="tabs">
                 <Tabs @on-click="loadTabList">
-                    <TabPane label="我的日常" name="blogs">
+                    <TabPane label="我的小温暖" name="blogs">
                       <ul class="myblog floatL">
                         <li class="blog-unit"  v-for="article in articleList">
                           <router-link :to="{path:'/blogPage',query:{id:article.id}}" target="_blank">
@@ -65,10 +83,6 @@
                                       <Icon class="collect-color" type="star"></Icon>
                                       <span>{{article.collectCount}}</span>
                                     </div>
-                                    <div class=" floatL left-dis-24">
-                                      <Icon class="like-color" type="heart"></Icon>
-                                      <span>0</span>
-                                    </div>
                                 </div>
                           </div>
 
@@ -84,7 +98,7 @@
                         <div v-if="articleList.length == 0" class="no_data">暂无数据</div>
                       </ul>
                     </TabPane>
-                    <TabPane label="日常收藏" name="collections">
+                    <TabPane label="收藏的小温暖" name="collections">
                         <ul class="myblog floatL">
                         <li class="blog-unit2" v-for="collection in collectionList">
                           <router-link :to="{path:'/blogPage',query:{id:collection.relationId}}" target="_blank">
@@ -95,7 +109,7 @@
                         <div v-if="collectionList.length == 0" class="no_data">暂无数据</div>
                       </ul>
                     </TabPane>
-                    <TabPane label="电影收藏" name="movieCollections">
+                    <TabPane label="喜欢的电影" name="movieCollections">
                         <ul class="myblog floatL">
                         <li class="blog-unit2"  v-for="movieCollection in movieCollectionList">
                           <router-link :to="{path:'/moviePage',query:{id:movieCollection.relationId}}" target="_blank">
@@ -137,8 +151,10 @@ export default {
         data() {
             return {
                 user: {},
+                personId:"",
                 articleList:{},
                 modal: false,
+                pwdModal: false,
                 formItem: {
                     name: '',
                     mail: '',
@@ -146,6 +162,11 @@ export default {
                     text: '',
                     image:"",
                     config:config
+                },
+                pwdItem: {
+                    oldPwd: '',
+                    newPwd: '',
+                    newPwdAgain: ''
                 },
                 collectionList:[],
                 movieCollectionList: [],
@@ -157,6 +178,7 @@ export default {
             var username = new Array();
             username = cookieMsg.split("-");
             var login = username[username.length-1];
+            this.personId = username[username.length-2];
             if (login != "") {
               this.loadInfo();
               this.loadArticles();
@@ -166,19 +188,18 @@ export default {
         },
         methods: {
             loadInfo: function() {
-                Auth.getUserInfo({}).then(response => {
+                let data = {
+                  userId: this.personId
+                }
+                Auth.getUserInfo(data).then(response => {
                     if (response.data.code == 200) {
                         this.user = response.data.info;
                     }
                 });
             },
             loadArticles: function() {
-              var cookieMsg = this.getCookie("userInfo");
-              var username = new Array();
-              username = cookieMsg.split("-");
-              var personId = username[username.length-2];
               let data = {
-                  personId: personId
+                  personId: this.personId
               };
               Article.loadArticles(data).then(response => {
                   if (response.data.code == 200) {
@@ -214,12 +235,13 @@ export default {
               this.$router.push('/newBlog?id='+id);
             },
             delArticle: function(id) {
-              let data = {
-                id: id
-              }
-              Article.delArticle(data).then(response => {
+              var param = new URLSearchParams();
+              param.append('id',id);
+              Article.delArticle(param).then(response => {
                   if (response.data.code == 200) {
-                      this.$router.push('/blogList');
+                      this.$Message.info("删除成功！");
+                      let that = this;
+                      setTimeout(function(){that.$router.push('/blogList');}, 2000);
                   } else {
                       this.$Message.error(response.data.msg);
                   }
@@ -239,8 +261,8 @@ export default {
               this.formItem.text = this.user.msg;
               this.formItem.image = this.user.image;
             },
-            changeImage:function(){
-
+            changePwd:function(){
+              this.pwdModal = true;
             },
             upload(e){
               var files = e.target.files;
@@ -274,6 +296,28 @@ export default {
                   if (response.data.code == 200) {
                         this.loadInfo();
                         this.$emit("userchange",this.formItem);
+                  } else {
+                        this.$Message.error(response.data.msg);
+                  }
+              });
+            },
+            pwdOk:function() {
+              if (!this.pwdItem.oldPwd || !this.pwdItem.newPwd || !this.pwdItem.newPwdAgain) {
+                this.$Message.error("原始密码和新密码都不能为空哟！");
+                return;
+              }
+              var param = new URLSearchParams()
+              param.append('id',this.user.id);
+              param.append('oldPwd',this.pwdItem.oldPwd);
+              param.append('newPwd',this.pwdItem.newPwd);
+              param.append('newPwdAgain',this.pwdItem.newPwdAgain);
+              Auth.editUserPwd(param).then(response => {
+                  if (response.data.code == 200) {
+                        this.$Message.success("修改密码成功！");
+                        this.pwdModal = false;
+                        this.pwdItem.oldPwd = "";
+                        this.pwdItem.newPwd = "";
+                        this.pwdItem.newPwdAgain = "";
                   } else {
                         this.$Message.error(response.data.msg);
                   }
@@ -382,6 +426,7 @@ a {
   color: #c3c0bb;
   font-size: 14px;
   cursor: pointer;
+  margin-left: 10px;
 }
 .sex{
   font-size: 15px !important;
@@ -496,6 +541,7 @@ a {
 .msg-info{
     float: left;
     margin-top: 10px;
+    width: 100%;
 }
 .no_data{
     margin-top: 30px;

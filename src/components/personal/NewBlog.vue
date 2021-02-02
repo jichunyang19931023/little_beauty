@@ -91,12 +91,11 @@ export default {
                   });
                   return;
                 }
-                let data = {
-                  title: this.title,
-                  content: this.content,
-                  userId: userId
-                }
-                Article.addArticle(data).then(response => {
+                var param = new URLSearchParams();
+                param.append('title', this.title);
+                param.append('content', this.content);
+                param.append('userId', userId);
+                Article.addArticle(param).then(response => {
                     if (response.data.code == 200) {
                         this.$router.push('/blogList');
                     } else {

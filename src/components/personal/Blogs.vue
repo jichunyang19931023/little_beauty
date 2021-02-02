@@ -1,14 +1,14 @@
 <template>
   <div id="blog_body">
-    <h1>
-      <Breadcrumb>
+    <div class="head_title">
+      <Breadcrumb style="vertical-align: middle;padding-top: 10px;">
         <BreadcrumbItem to="/">Home</BreadcrumbItem>
-        <BreadcrumbItem>我的博客</BreadcrumbItem>
+        <BreadcrumbItem>我的小温暖</BreadcrumbItem>
       </Breadcrumb>
       <router-link to="/newBlog" class="new-blog">
-        <Icon type="ios-nutrition" class="carrot"></Icon>&nbsp;写博客
+        <Icon type="ios-nutrition" class="carrot"></Icon>&nbsp;记录小温暖
       </router-link>
-    </h1>
+    </div>
     <ul class="floatL">
       <li class="blog-unit"  v-for="article in articleList">
         <router-link :to="{path:'/blogPage',query:{id:article.id}}" target="_blank">
@@ -26,10 +26,6 @@
                     <Icon class="collect-color" type="star"></Icon>
                     <span>{{article.collectCount}}</span>
                   </div>
-                  <div class=" floatL left-dis-24">
-                    <Icon class="like-color" type="heart"></Icon>
-                    <span>0</span>
-                  </div>
               </div>
         </div>
         
@@ -42,25 +38,16 @@
           </li>
         </ul>
       </li>
+      <div class="no_warm" v-if="articleList.length == 0">还没有日常小温暖的记录呢</div>
     </ul>  
-    <div class="new_articles floatL">
+    <div class="new_articles floatL article">
       <div class="title">
-        <span><Icon type="heart" />&nbsp;最新文章</span>
+        <span><Icon type="heart" />&nbsp;写封信吧</span>
       </div>
-      <ul>
-        <li class="article floatL" v-for="article in articleList">
-          <router-link :to="{path:'/blogPage',query:{id:article.id}}" target="_blank">
-            <span class="t">{{article.title}}</span>
-            <span class="time">{{article.createTimeStr}}</span>
-          </router-link>
-        </li>
-        <div class="loading">
-            <Spin v-if="articleLoading">
-              <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
-              <div>等等我·····</div>
-            </Spin>
-        </div>
-      </ul>
+      <div style="margin: 10px 5px;cursor: pointer;" @click="gotoLetter()">
+        <img class="wechat floatL" src="../../assets/images/letter.jpg">
+        <span class="letter_text">因为陌生，所以可以无所顾忌；<br/>因为陌生，所以可以敞开心扉。<br/>写信给我吧，我在这里等你。</span>
+      </div>
     </div>
     <div class="new_articles floatL">
       <div class="title">
@@ -118,16 +105,20 @@ export default {
               this.$router.push('/newBlog?id='+id);
             },
             delArticle: function(id) {
-              let data = {
-                id: id
-              }
-              Article.delArticle(data).then(response => {
+              var param = new URLSearchParams();
+              param.append('id',id);
+              Article.delArticle(param).then(response => {
                   if (response.data.code == 200) {
-                      this.$router.push('/blogList');
+                      this.$Message.info("删除成功！");
+                      let that = this;
+                      setTimeout(function(){that.$router.push('/blogList');}, 2000);
                   } else {
                       this.$Message.error(response.data.msg);
                   }
               });
+            },
+            gotoLetter: function(){
+              this.$router.push('/chatWithMe');
             }
         }
     }
@@ -138,6 +129,11 @@ export default {
   }
 </style>
 <style scoped>
+.head_title{
+  float: left;
+  width: 98%;
+  border-bottom: 1px dashed #f1ecec;
+}
 .comment-color{
   color: #75b7e9;
 }
@@ -152,33 +148,35 @@ export default {
 }
 #blog_body>ul{
   width: 60%;
-  min-height: 150px;
+  min-height: 250px;
   overflow: auto;
 }
 .new-blog{
     float: right;
-    margin-right: 30px;
+    margin-right: 10px;
     font-size: 15px;
-    font-weight: 600;
-    background: #f1b5d3;
-    border: 1px solid #fff;
+    font-weight: 400;
+    border: 1px solid #f1b5d3;
     border-radius: 4px;
     padding: 3px 5px;
-    color: #fff;
+    color: #f1b5d3;
 }
 .new-blog:hover{
-  color: #fff;
+  color: #f1a5a2;
 }
 .carrot{
-  font-size: 20px;
-  color: #fff;
+  font-size: 21px;
+  color: #f1a5a2;
+  vertical-align: middle;
 }
 .blog-unit{
     margin-left: 24px;
     margin-right: 24px;
     border-bottom: 1px dashed #e9e9e9;
     padding-top: 16px;
-    height: 140px;
+    padding-bottom: 10px;
+    float: left;
+    width: 95%;
 }
 .blog-title{
     font-size: 20px;
@@ -208,7 +206,7 @@ export default {
 .new_articles{
     width: 35%;
     margin-left: 2%;
-    margin-bottom: 50px;
+    margin-bottom: 15px;
 }
 .new_articles .title{
   padding: 8px 10px;
@@ -217,7 +215,7 @@ export default {
   color: #ec5d80;
 }
 .new_articles .article{
-  padding: 7px 5px 0px 5px;
+  padding: 10px 5px 0px 5px;
   width: 98%;
 }
 .article .time{
@@ -236,5 +234,15 @@ export default {
 }
 .article .wechat{
   width: 100px;
+}
+.letter_text{
+  padding-left: 15px;
+  float: left;
+  line-height: 2;
+}
+.no_warm{
+  margin: 20px;
+  color: gray;
+  float: left;
 }
 </style>

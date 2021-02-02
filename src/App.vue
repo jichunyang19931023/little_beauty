@@ -82,8 +82,8 @@
                         <img class="image" :src="avatar">
                         <a class="namelink" href="">{{username}}</a>
                         <DropdownMenu slot="list">
-                            <DropdownItem><router-link to="/personal">个人中心</router-link></DropdownItem>
-                            <DropdownItem><router-link to="/blogList">我的博客</router-link></DropdownItem>
+                            <DropdownItem><router-link to="/personal">我的小角落</router-link></DropdownItem>
+                            <DropdownItem><router-link to="/blogList">我的小温暖</router-link></DropdownItem>
                             <DropdownItem><router-link to="/chatWithMe">联系我呀</router-link></DropdownItem>
                             <DropdownItem>
                                 <span @click="logout()">退出</span>
@@ -116,7 +116,10 @@ export default {
         }
     },
     beforeMount: function () {
-        this.loadUser();
+        var username = new Array();
+        username = this.getCookie("userInfo").split("-");
+        let personId = username[username.length-2];
+        this.loadUser(personId);
     },
     methods: {
         toLogin:function(login){
@@ -137,8 +140,11 @@ export default {
             this.username = data.name;
             this.avatar = data.image;
         },
-        loadUser : function(){
-            Auth.getUserInfo({}).then(response => {
+        loadUser : function(personId){
+            let data = {
+                userId: personId
+            }
+            Auth.getUserInfo(data).then(response => {
                 if (response.data.code == 200) {
                     this.avatar = response.data.info.image;
                     this.username = response.data.info.name;

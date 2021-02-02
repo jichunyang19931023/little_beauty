@@ -58,7 +58,13 @@ export default {
         },
         methods: {
             loadInfo: function(id) {
-                Auth.getUserInfo({}).then(res => {
+                var username = new Array();
+                username = this.getCookie("userInfo").split("-");
+                let personId = username[username.length-2];
+                let data = {
+                  userId: personId
+                }
+                Auth.getUserInfo(data).then(res => {
                   if (res.data.code == 200) {
                         this.user = res.data.info;
                         let data = {
@@ -87,6 +93,7 @@ export default {
               Movie.getMovieById(data).then(response => {
                   if (response.data.code == 200) {
                       this.movie = response.data.info;
+                      this.movie.imagePath = "/api/webapi/article/downloadFile?fileUrl=" + response.data.info.imagePath;
                   } else {
                       this.$Message.error(response.data.msg);
                   }

@@ -3,7 +3,7 @@
     <div class="new_articles">
       <div class="title">
         <span><Icon type="heart" />&nbsp;日常小温暖</span>
-        <span class="more">more</span>
+        <span class="more" @click="showMoreArticle()">more</span>
       </div>
       <ul>
           <li class="article" v-for="article in articleList">
@@ -27,13 +27,13 @@
     <div class="movies">
      <div class="title">
       <span><Icon type="bowtie" />&nbsp;看个电影呗</span>
-      <span class="more">more</span>
+      <span class="more" @click="showMoreMovie()">more</span>
     </div>
      
      <ul>
         <li class="article" v-for="movie in movieList">
           <router-link :to="{path:'/moviePage',query:{id:movie.id}}"  class="my-color" target="_blank">
-            <img :src="movie.imagePath">
+            <img :src="movie.imagePathThumb">
             <span class="t">{{movie.movieName}}</span>
             <br><span class="movie-abs">{{movie.introduction}}</span>
           </router-link>
@@ -98,12 +98,18 @@ export default {
                         var movies = res.data.info.records;
                         movies.forEach(function(item){
                           item.movieName = item.movieName.substr(0,22);
-                          item.imagePath = "/api/webapi/article/downloadFile?fileUrl=" + item.imagePath;
+                          item.imagePathThumb = "/api/webapi/article/downloadFile?fileUrl=" + item.imagePathThumb;
                           item.introduction = item.introduction.substr(0,70) + "...";
                         });
                         this.movieList = movies;
                   }
                 });
+            },
+            showMoreArticle: function(){
+              this.$router.push('/articleList');
+            },
+            showMoreMovie: function(){
+              this.$router.push('/movieList');
             }
         }
     }
@@ -201,5 +207,8 @@ a {
     height: 100px;
     position: relative;
     border: 1px solid #eee;
+}
+.more{
+  cursor: pointer;
 }
 </style>

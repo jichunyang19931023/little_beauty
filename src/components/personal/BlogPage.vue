@@ -10,7 +10,7 @@
         <span class="title">{{article.title}}</span>
         <div class="items">
           <span>{{article.createTimeStr}}</span>
-          <span class="left-dis-24">{{article.username}}</span>
+          <span class="left-dis-24 writer">{{article.username}}</span>
           <span class="left-dis-24">
             <Icon class="comment-color" type="chatbubble-working"></Icon>
             <span>{{article.commentCount}}</span>
@@ -18,10 +18,6 @@
           <span class="left-dis-24">
             <Icon class="collect-color" type="star"></Icon>
             <span>{{article.collectCount}}</span>
-          </span>
-          <span class="left-dis-24">
-            <Icon class="like-color" type="heart"></Icon>
-            <span>1</span>
           </span>
           <span class="floatR left-dis-24 cursor" @click="collectArticle(article.id)">
             <Icon :class="hasCollected? 'collect-color' : 'trash-color'" type="star"></Icon>
@@ -42,6 +38,7 @@
           </span> -->
         </div>
         <p ref="article" class="floatL content" v-html="article.content"></p>
+        <div v-if="article.content == 0">等等我~我正在加载~</div>
     </div>
     <div class="comments floatL">
       <span class="commentTitie">评论</span>
@@ -70,7 +67,7 @@
         </li>
       </ul>
       <p class="floatL replyPerson" v-if="commentor !=''">回复&nbsp;&nbsp;{{this.commentor}}：</p>
-      <textarea class="writeComments" placeholder="在这里留下评论吧~" v-model="commentsContent"></textarea>
+      <Input v-model="commentsContent" placeholder="在这里留下评论吧~" type="textarea" :autosize="{minRows: 6}" class="writeComments"></Input>
       <Button type="ghost" shape="circle" class="floatR commentButton" @click="addComment(article.id)">评论</Button>
     </div>
   </div>
@@ -99,7 +96,13 @@ export default {
         },
         methods: {
             loadInfo: function(id) {
-              Auth.getUserInfo({}).then(response => {
+              var username = new Array();
+              username = this.getCookie("userInfo").split("-");
+              let personId = username[username.length-2];
+              let data = {
+                 userId: personId
+              }
+              Auth.getUserInfo(data).then(response => {
                   if (response.data.code == 200) {
                       this.user = response.data.info;
                       let data = {
@@ -141,12 +144,13 @@ export default {
               this.$router.push('/newBlog?id='+id);
             },
             delArticle: function(id) {
-              let data = {
-                id: id
-              }
-              Article.delArticle(data).then(response => {
+              var param = new URLSearchParams();
+              param.append('id',id);
+              Article.delArticle(param).then(response => {
                   if (response.data.code == 200) {
-                      this.$router.push('/blogList');
+                      this.$Message.info("删除成功！");
+                      let that = this;
+                      setTimeout(function(){that.$router.push('/blogList');}, 2000);
                   } else {
                       this.$Message.error(response.data.msg);
                   }
@@ -371,12 +375,8 @@ export default {
   border-radius: 5px 5px 0 0;
 }
 .writeComments{
-  width: 96%;
-  height: 100px;
-  margin: 10px 2% 5px 2%;
-  padding: 5px;
-  border:1px solid #f7b7c7;
-  border-radius: 5px;
+  margin: 1.5%;
+  width: 97%;
 }
 .commentButton{
   margin: 0px 20px 8px;
@@ -416,5 +416,8 @@ export default {
 .subList{
   margin-top: 15px;
   margin-left: 40px;
+}
+.writer{
+  color: #6cbb93;
 }
 </style>
