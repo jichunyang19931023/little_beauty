@@ -73,7 +73,7 @@
           <img v-show="isLogin==1" src="../assets/images/warm_pic1.jpg" style="width:100%;"/>
         </div>
         <div class="formdata">
-          <span class="text" v-show="isLogin==0">注册新会员</span>
+          <span class="text" v-show="isLogin==0">注册</span>
           <span class="text" v-show="isLogin==1">登录</span>
 
           <!-- 注册模块 -->
@@ -137,6 +137,9 @@ export default {
                 if (!value) {
                     return callback(new Error('用户名不能为空'));
                 }
+                if (value.length > 25) {
+                    return callback(new Error('用户名不能大于25个字符'));
+                }
                 // 模拟异步验证效果
                 let data = {
                   username: this.formRegister.username
@@ -152,11 +155,11 @@ export default {
             const validatePass = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('密码不能为空'));
-                } else {
-                    if (this.formRegister.passwdCheck !== '') {
-                        // 对第二个密码框单独验证
-                        this.$refs.formRegister.validateField('passwdCheck');
-                    }
+                }else if (value.length > 20 || value.length < 6) {
+                    callback(new Error('密码需要在6-20位之间'));
+                }else if (this.formRegister.passwdCheck !== '') {
+                    // 对第二个密码框单独验证
+                    this.$refs.formRegister.validateField('passwdCheck');
                     callback();
                 }
             };
@@ -175,12 +178,17 @@ export default {
                 if (!value) {
                     return callback(new Error('用户名不能为空'));
                 }
+                if (value.length > 25) {
+                    return callback(new Error('用户名不能大于25个字符'));
+                }
                 callback();
             };
 
             const validatePass2 = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('密码不能为空'));
+                }else if (value.length > 20 || value.length < 6) {
+                    callback(new Error('密码需要在6-20位之间'));
                 } else {
                     callback();
                 }

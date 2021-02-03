@@ -122,10 +122,11 @@ export default {
 a {
   color: #42b983 !important;
 }
-.new_movies,.movies{
+.new_movies{
     width: 100%;
     float: left;
     padding: 0 25px;
+    min-height: 400px;
 }
 .new_movies .title,.movies .title{
   padding: 8px 10px;

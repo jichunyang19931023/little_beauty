@@ -140,10 +140,10 @@ export default {
 .publish{
   width: 13.5%;
   padding: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #f095aa;
   border-radius: 4px;
-  background: #d87474;
-  color: #fff;
+  background: #fff;
+  color: #ec7a94;
   margin-left: 1%;
 }
 #editor {
