@@ -11,6 +11,7 @@ import MovieList from '@/components/MovieList'
 import MoviePage from '@/components/MoviePage'
 import Heart from '@/components/Heart'
 import ChatWithMe from '@/components/ChatWithMe'
+import Others from '@/components/personal/Others'
 
 // require styles
 import 'quill/dist/quill.core.css'
@@ -75,6 +76,11 @@ export default new Router({
       path: '/chatWithMe',
       name: 'ChatWithMe',
       component: ChatWithMe
+    },
+    {
+      path: '/others',
+      name: 'Others',
+      component: Others
     }
   ]
 })

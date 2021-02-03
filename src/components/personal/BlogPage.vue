@@ -10,7 +10,9 @@
         <span class="title">{{article.title}}</span>
         <div class="items">
           <span>{{article.createTimeStr}}</span>
-          <span class="left-dis-24 writer">{{article.username}}</span>
+          <router-link :to="{path:'/others',query:{id:article.userId}}" class="my-color">
+            <span class="left-dis-24 writer">{{article.username}}</span>
+          </router-link>
           <span class="left-dis-24">
             <Icon class="comment-color" type="chatbubble-working"></Icon>
             <span>{{article.commentCount}}</span>
