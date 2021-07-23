@@ -481,9 +481,6 @@ a {
 .blog-unit{
   height: 125px;
 }
-.blog-unit3{
-    height: 80px;
-}
 .blog-title{
     font-size: 20px;
     color: #4f4f4f;

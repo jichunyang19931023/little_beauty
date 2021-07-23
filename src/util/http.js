@@ -21,7 +21,7 @@ var HttpRequest = {
         resolve(res);
       }
     }).catch(err =>{
-        router.push("/login/1");
+        //router.push("/login/1");
         reject(err);
     })
   }

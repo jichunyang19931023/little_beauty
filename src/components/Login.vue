@@ -78,7 +78,7 @@
 
           <!-- 注册模块 -->
           <Form  v-show="isLogin==0" ref="formRegister" :model="formRegister" :rules="ruleRegister" :label-width="80">
-              <FormItem label="头像" prop="image">
+              <!-- <FormItem label="头像" prop="image">
                   <input type="file" v-on:change="upload" class="upload-image" />
                   <div class="thumb-image">
                     <Icon class="no-image" v-show="noImage" type="image"></Icon>
@@ -92,7 +92,7 @@
                   </Row>
                     <img :src="imageurl" class="image-upload" v-show="!noImage">
                   </div>
-              </FormItem>
+              </FormItem> -->
               <FormItem label="用户名" prop="username">
                   <Input type="text" v-model="formRegister.username"></Input>
               </FormItem>
@@ -102,9 +102,9 @@
               <FormItem label="重复密码" prop="passwdCheck">
                   <Input type="password" v-model="formRegister.passwdCheck"></Input>
               </FormItem>
-              <FormItem label="邮箱" prop="mail">
+              <!-- <FormItem label="邮箱" prop="mail">
                   <Input type="text" v-model="formRegister.mail"></Input>
-              </FormItem>
+              </FormItem> -->
               <FormItem class="but">
                   <Button @click="registerSubmit('formRegister')" :loading="registerLoading">提交</Button>
                   <Button @click="handleReset('formRegister')" style="margin-left: 8px" :disabled="registerLoading">重置</Button>
@@ -130,6 +130,7 @@
 <script>
 import { Auth } from "../service/auth.js";
 import { Article } from "../service/article.js";
+
 export default {
         data() {
             //注册参数验证
@@ -255,10 +256,10 @@ export default {
                     if (valid) {
                         var username = this.formRegister.username;
                         var param = new URLSearchParams();
-                        param.append('image',this.imageurl?this.imageurl.replaceAll("/api/webapi/article/downloadFile?fileUrl=", ""):"");
+                        // param.append('image',this.imageurl?this.imageurl.replaceAll("/api/webapi/article/downloadFile?fileUrl=", ""):"");
                         param.append('username',this.formRegister.username);
                         param.append('password',this.formRegister.passwd);
-                        param.append('mail',this.formRegister.mail? this.formRegister.mail:"");
+                        //param.append('mail',this.formRegister.mail? this.formRegister.mail:"");
                         this.registerLoading = true;
                         Auth.register(param).then(response => {
                             if (response.data.code == 200) {
